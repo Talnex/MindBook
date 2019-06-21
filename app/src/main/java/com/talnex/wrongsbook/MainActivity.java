@@ -9,15 +9,11 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.view.animation.BounceInterpolator;
 import android.view.animation.ScaleAnimation;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -26,7 +22,6 @@ import com.talnex.wrongsbook.Beans.Node;
 import com.talnex.wrongsbook.Components.myTextView;
 import com.talnex.wrongsbook.MindMap.DrawGeometryView;
 import com.talnex.wrongsbook.MindMap.HVScrollView;
-import com.talnex.wrongsbook.Utils.DisplayUtil;
 import com.talnex.wrongsbook.Utils.ViewIds;
 import com.talnex.wrongsbook.Utils.WigetController;
 import com.talnex.wrongsbook.Utils.sample;
@@ -66,15 +61,9 @@ public class MainActivity extends AppCompatActivity {
         SCREEN_WIDTH = dm.widthPixels;
         SCREEN_HEIGHT = dm.heightPixels;
 
-        Log.d("test", SCREEN_HEIGHT + "  " + SCREEN_WIDTH);
-
 
         Node node = sample.getANode();
 
-
-//        Node node1 = JSONObject.parseObject(jsonObject.get("children").toString(),Node.class);
-//
-//        draw(node, 720, 1280);
         node.treeParm.setCenter_x(720);
         node.treeParm.setCenter_y(1280);
         drawChild(node);
@@ -86,10 +75,10 @@ public class MainActivity extends AppCompatActivity {
         Log.d("json", jsonObject.toJSONString());
     }
 
-    private myTextView draw(final Node tree, int x, int y) {
+    private myTextView draw( Node tree, int x, int y) {
 
         //增加的节点
-        myTextView textView = new myTextView(this, null);
+        final myTextView textView = new myTextView(this, null);
         textView.setTextColor(Color.BLACK);
         textView.setTextSize(20);
         textView.setText(tree.getUrl());
@@ -108,8 +97,10 @@ public class MainActivity extends AppCompatActivity {
         textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                hv.smoothScrollTo((int) view.getX() - SCREEN_WIDTH / 2 + tree.treeParm.getWidth() / 2
-                        , (int) view.getY() - SCREEN_HEIGHT / 2 + tree.treeParm.getHight() / 2);
+
+
+                hv.smoothScrollTo((int) view.getX() - SCREEN_WIDTH / 2 + view.getWidth() / 2
+                        , (int) view.getY() - SCREEN_HEIGHT / 2 + view.getHeight() / 2);
             }
         });
 
@@ -150,7 +141,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     void drawChild(Node node) {
-        int offset = node.treeParm.getOffset();
+
         List<Node> children = node.getChildren();
         int father_x = node.treeParm.getCenter_x();
         int father_y = node.treeParm.getCenter_y();
@@ -190,5 +181,7 @@ public class MainActivity extends AppCompatActivity {
         Log.d("xy", lines.getX() + lines.getY() + "");
 
     }
+
+
 
 }

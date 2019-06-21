@@ -1,7 +1,8 @@
 package com.talnex.wrongsbook.Beans;
 
 public class TreeParm {
-    private int offset;
+    private int offset_up;
+    private int offset_down;
 
     private int leftpoint_x;
     private int leftpoint_y;
@@ -34,12 +35,20 @@ public class TreeParm {
         this.hight = hight;
     }
 
-    public int getOffset() {
-        return offset;
+    public int getOffset_up() {
+        return offset_up;
     }
 
-    public void setOffset(int offset) {
-        this.offset = offset;
+    public void setOffset_up(int offset_up) {
+        this.offset_up = offset_up;
+    }
+
+    public int getOffset_down() {
+        return offset_down;
+    }
+
+    public void setOffset_down(int offset_down) {
+        this.offset_down = offset_down;
     }
 
     public int getLeftpoint_x() {
