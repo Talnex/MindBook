@@ -2,20 +2,21 @@ package com.talnex.wrongsbook.Beans;
 
 import com.talnex.wrongsbook.Utils.UUID;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
 public class Node {
-    private String id;
-    private int type;
-    private String info;
-    private String description;
-    private String url;
-    private List<Node> children = null;
-    private int rank;
+    public String id;
+    public int type;
+    public String info;
+    public String description;
+    public String url;
+    public List<Node> children = null;
+    public int rank;
     public TreeParm treeParm = new TreeParm();
-    private List<String> keywords = null;
-    private String parent;
+    public List<String> keywords = null;
+    public String parent;
 
     public void setId(String id) {
         this.id = id;
@@ -141,6 +142,21 @@ public class Node {
 
     public void deleteChild() {
 
+    }
+
+    public boolean hasChildren() {
+        if (children.size() == 0) return false;
+        return true;
+    }
+
+    public List<String> getChildrenID() {
+        List<String> ids = new ArrayList<>();
+        for (Node child :
+                children) {
+            ids.add(child.id);
+        }
+        if (ids.size() == 0) return null;
+        return ids;
     }
 
 }

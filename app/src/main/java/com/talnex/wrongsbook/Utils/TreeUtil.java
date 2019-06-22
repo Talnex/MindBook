@@ -3,29 +3,34 @@ package com.talnex.wrongsbook.Utils;
 import com.talnex.wrongsbook.Beans.Node;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Stack;
 
 public class TreeUtil {
-    public static int GAP = 225;
-    public static int CENG_CAP = 800;
+    public static int GAP = 1;
+    public static int CENG_CAP = 1;
     public static int SCREEN_WIDTH;
     public static int SCREEN_HEIGHT;
 
+    public static Stack<Node> stack = new Stack<>();
+
     public static Node mindTree;
-    public static Map<String, Node> map_idtoModle = new HashMap<>();
-    public static Map<String, Node> map_noChildren = new HashMap<>();
+    public static Map<String, Node> map_IDtoClass = new HashMap<>();
+    public static List<Node> list_noChildren = new ArrayList<>();
 
     public static void initUtil(Node node) {
         mindTree = node;
     }
 
     public static void loadAllNode(Node node) {
-        map_idtoModle.put(node.getId(), node);
-        List<Node> children = node.getChildren();
+        map_IDtoClass.put(node.id, node);
+        List<Node> children = node.children;
         if (children.size() == 0) {
-            map_noChildren.put(node.getId(), node);
+            list_noChildren.add(node);
         } else {
             for (Node child :
                     children) {
@@ -35,53 +40,135 @@ public class TreeUtil {
     }
 
     public static void computeOffSet() {
-        List<Node> children = (List<Node>) map_noChildren.values();
+        Collections.sort(list_noChildren, new Comparator<Node>() {
+            @Override
+            public int compare(Node o1, Node o2) {
+                int res = o1.id.compareTo(o2.id);
+                if (res == -1) {
+                    return -1;
+                } else if (res == 1) {
+                    return 1;
+                }
+                return 0;
+            }
+        });
+
         for (Node child :
-                children) {
-            child.treeParm.setOffset_down(0);
-            child.treeParm.setOffset_up(0);
+                list_noChildren) {
+            child.treeParm.offset_down = 0;
+            child.treeParm.offset_up = 0;
+            child.treeParm.alloffset_up = 0;
+            child.treeParm.alloffset_down = 0;
         }
 
-        String id = "";
-        for (Node child :
-                children) {
-            if (child.getParent().equals(id)) {
-            } else {
-                id = child.getParent();
-                computeBP(map_idtoModle.get(id));
-            }
+        //TODO: 对这棵树进行后序遍历
 
+        Node node = mindTree;
+        while (node.hasChildren()) {
+            stack.push(node);
+            node = node.children.get(0);
+        }
+
+        re_compute(node);
+
+    }
+
+    /**
+     * 递归求各个节点的上下偏移量
+     *
+     * @param node
+     * @return
+     */
+    private static void re_compute(Node node) {
+        computeBP(node);
+        List<String> brother_ID = getDownBrotherID(node);
+        if (brother_ID != null) {
+            for (String brother :
+                    brother_ID) {
+                Node bro = map_IDtoClass.get(brother);
+                if (bro.hasChildren()) {
+                    while (bro.hasChildren()) {
+                        stack.push(bro);
+                        bro = bro.children.get(0);
+                    }
+                    re_compute(bro);
+                } else {
+                    computeBP(bro);
+                }
+            }
+            if (!stack.isEmpty()) re_compute(stack.pop());
+
+        } else {
+            if (!stack.isEmpty()) re_compute(stack.pop());
         }
     }
 
+    /**
+     * 计算一个子孙都准备好的节点的上下偏移量
+     *
+     * @param node
+     */
+
     private static void computeBP(Node node) {
-        int offset_up = 0;
-        int offset_down = 0;
-        List<Node> children = node.getChildren();
-        int size = children.size();
-        int mid = children.size() / 2;
-        if (children.size() % 2 == 0) {
-            /**
-             * 计算上偏移
-             */
-            offset_up += getDownOffSet(children.get(0));
-            for (int i = 1; i < mid; i++) {
-                offset_up += getUpOffSet(children.get(i));
-                offset_up += getDownOffSet(children.get(i));
+        if (node != null) {
+            int offset_up = 0;
+            int offset_down = 0;
+            List<Node> children = node.children;
+            int size = children.size();
+            int mid = children.size() / 2;
+            if (size == 0 || size == 1) {
+                node.treeParm.offset_down = 0;
+                node.treeParm.offset_up = 0;
+            } else if (children.size() % 2 == 0) {
+                /**
+                 * TODO:计算上偏移
+                 */
+                offset_up += getDownOffSet(children.get(0));
+                for (int i = 1; i < mid; i++) {
+                    offset_up += getUpOffSet(children.get(i));
+                    offset_up += getDownOffSet(children.get(i));
+                    offset_up += GAP * 2;
+                }
                 offset_up += GAP;
-            }
-            /**
-             * 计算下偏移
-             */
-            offset_down += getUpOffSet(children.get(size - 1));
-            for (int i = mid; i < size; i++) {
-                offset_down += getUpOffSet(children.get(i));
-                offset_down += getDownOffSet(children.get(i));
+
+                /**
+                 * TODO:计算下偏移
+                 */
+                offset_down += getUpOffSet(children.get(size - 1));
+                for (int i = mid; i < size - 1; i++) {
+                    offset_down += getUpOffSet(children.get(i));
+                    offset_down += getDownOffSet(children.get(i));
+                    offset_down += GAP * 2;
+                }
                 offset_down += GAP;
+
+                node.treeParm.offset_down = offset_down;
+                node.treeParm.offset_up = offset_up;
+
+
+            } else {
+                //上偏移
+                offset_up += getDownOffSet(children.get(0));
+                for (int i = 1; i < mid; i++) {
+                    offset_up += getUpOffSet(children.get(i));
+                    offset_up += getDownOffSet(children.get(i));
+                    offset_up += GAP * 2;
+                }
+                offset_up += GAP * 2;
+
+                //下偏移
+                offset_down += getUpOffSet(children.get(size - 1));
+                for (int i = mid + 1; i < size - 1; i++) {
+                    offset_down += getUpOffSet(children.get(i));
+                    offset_down += getDownOffSet(children.get(i));
+                    offset_down += GAP * 2;
+                }
+                offset_down += GAP * 2;
+
+                node.treeParm.offset_down = offset_down;
+                node.treeParm.offset_up = offset_up;
+
             }
-
-
-
         } else {
 
         }
@@ -90,20 +177,17 @@ public class TreeUtil {
 
     /**
      * 计算一个节点及之后节点的总下偏移量
+     *
      * @param node
      * @return
      */
     public static int getDownOffSet(Node node) {
         int res = 0;
         int size;
-        List<Node> children = node.getChildren();
-        if (children == null) {
-            size = 0;
-        } else {
-            size = children.size();
-        }
+        List<Node> children = node.children;
+        size = children.size();
 
-        res += node.treeParm.getOffset_down();
+        res += node.treeParm.offset_down;
 
         if (size == 0) {
             return 0;
@@ -117,20 +201,17 @@ public class TreeUtil {
 
     /**
      * 计算一个节点及之后所有节点的总上偏移量
+     *
      * @param node
      * @return
      */
     public static int getUpOffSet(Node node) {
         int res = 0;
         int size;
-        List<Node> children = node.getChildren();
-        if (children == null) {
-            size = 0;
-        } else {
-            size = children.size();
-        }
+        List<Node> children = node.children;
+        size = children.size();
 
-        res += node.treeParm.getOffset_up();
+        res += node.treeParm.offset_up;
 
         if (size == 0) {
             return 0;
@@ -142,4 +223,35 @@ public class TreeUtil {
         return res;
     }
 
+    /**
+     * 返回兄弟节点的ID
+     *
+     * @param node
+     * @return
+     */
+
+    private static List<String> getDownBrotherID(Node node) {
+
+        if (node == null) {
+            return null;
+        }
+        if (node.parent == null) {
+            return null;
+        }
+        Node father = map_IDtoClass.get(node.parent);
+        List<String> ids = new ArrayList<>();
+        if (father != null) {
+            ids = father.getChildrenID();
+            if (ids != null) {
+                if (ids.size() > 1) {
+                    int index = ids.indexOf(node.id);
+                    for (int i = 0; i <= index; i++) {
+                        ids.remove(0);
+                    }
+                    return ids;
+                } else return null;
+            } else return null;
+        }
+        return null;
+    }
 }

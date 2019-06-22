@@ -1,20 +1,23 @@
 package com.talnex.wrongsbook.Beans;
 
 public class TreeParm {
-    private int offset_up;
-    private int offset_down;
+    public int offset_up;
+    public int offset_down;
 
-    private int leftpoint_x;
-    private int leftpoint_y;
+    public int leftpoint_x;
+    public int leftpoint_y;
 
-    private int rightpoint_x;
-    private int rightpoint_y;
+    public int rightpoint_x;
+    public int rightpoint_y;
 
-    private int center_x;
-    private int center_y;
+    public int center_x;
+    public int center_y;
 
-    private int hight;
-    private int width;
+    public int hight;
+    public int width;
+
+    public int alloffset_up;
+    public int alloffset_down;
 
     public int getWidth() {
         return width;
