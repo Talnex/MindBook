@@ -58,4 +58,16 @@ public class WigetController {
         RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(margin);
         view.setLayoutParams(layoutParams);
     }
+
+    public static int getX(View view){
+        int[] location = new int[2] ;
+        view.getLocationOnScreen(location);
+        return location[0];
+    }
+
+    public static int getY(View view){
+        int[] location = new int[2] ;
+        view.getLocationOnScreen(location);
+        return location[1];
+    }
 }

@@ -1,4 +1,4 @@
-package com.talnex.wrongsbook;
+package com.talnex.wrongsbook.Activity;
 
 import android.graphics.Color;
 import android.os.Build;
@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
@@ -17,31 +16,34 @@ import android.view.animation.ScaleAnimation;
 import android.widget.RelativeLayout;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.talnex.wrongsbook.Beans.Node;
+import com.talnex.wrongsbook.Components.PopList;
 import com.talnex.wrongsbook.Components.myTextView;
 import com.talnex.wrongsbook.MindMap.DrawGeometryView;
 import com.talnex.wrongsbook.MindMap.HVScrollView;
+import com.talnex.wrongsbook.MindMap.TreeUtil;
+import com.talnex.wrongsbook.R;
+import com.talnex.wrongsbook.Utils.ColorUtils;
 import com.talnex.wrongsbook.Utils.JsonUtil;
-import com.talnex.wrongsbook.Utils.TreeUtil;
 import com.talnex.wrongsbook.Utils.ViewIds;
 import com.talnex.wrongsbook.Utils.WigetController;
 import com.talnex.wrongsbook.Utils.sample;
 
-import java.io.FileOutputStream;
+import java.util.ArrayList;
 import java.util.List;
 
-import static com.talnex.wrongsbook.Utils.TreeUtil.GAP;
-import static com.talnex.wrongsbook.Utils.TreeUtil.SCREEN_HEIGHT;
-import static com.talnex.wrongsbook.Utils.TreeUtil.SCREEN_WIDTH;
-import static com.talnex.wrongsbook.Utils.TreeUtil.map_IDtoClass;
+import static com.talnex.wrongsbook.MindMap.TreeUtil.SCREEN_HEIGHT;
+import static com.talnex.wrongsbook.MindMap.TreeUtil.SCREEN_WIDTH;
 
 public class MindTreeEngine extends AppCompatActivity {
 
     private DrawGeometryView drawGeometryView;
     private RelativeLayout insertLayout;
+    private ColorUtils colorUtils = new ColorUtils();
     private HVScrollView hv;
     private View lines;
+    private List<String > popMenuItemList = new ArrayList<>();
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -50,6 +52,7 @@ public class MindTreeEngine extends AppCompatActivity {
 
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         insertLayout = (RelativeLayout) findViewById(R.id.layout_zone);
+
         hv = (HVScrollView) findViewById(R.id.hvscrollview);
 
         DisplayMetrics dm = new DisplayMetrics();
@@ -65,8 +68,13 @@ public class MindTreeEngine extends AppCompatActivity {
         TreeUtil.computeOffSet();
         TreeUtil.computeXY(node);
 
-        String json = JSON.toJSONString(node);
-        JsonUtil.e("json", json);
+        //String json = JSON.toJSONString(node);
+        //JsonUtil.e("json", json);
+
+        popMenuItemList.add("copy");
+        popMenuItemList.add("delete");
+        popMenuItemList.add("share");
+        popMenuItemList.add("more");
 
         drawNode(node);
         drawTree(node);
@@ -81,23 +89,24 @@ public class MindTreeEngine extends AppCompatActivity {
 
             if (node.treeParm.center_y < child.treeParm.center_y) {
                 //画线
-                lines = new DrawGeometryView(this, 0, 0, Math.abs(child.treeParm.getLeftpoint_x() - node.treeParm.getRightpoint_x()), Math.abs(child.treeParm.getCenter_y() - node.treeParm.getCenter_y()), null
+                lines = new DrawGeometryView(this, 0, 0, Math.abs(child.treeParm.getLeftpoint_x() - node.treeParm.getRightpoint_x()), Math.abs(child.treeParm.getCenter_y() - node.treeParm.getCenter_y())
+                        , ColorUtils.rankColor.get(child.rank)
                 );
                 lines.invalidate();
-
                 AlphaAnimation alphaAnimation = new AlphaAnimation(0, 1);
                 alphaAnimation.setDuration(1500);
                 alphaAnimation.setFillAfter(true);
                 lines.setAnimation(alphaAnimation);
+
 
                 RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(Math.abs(child.treeParm.getLeftpoint_x() - node.treeParm.getRightpoint_x()), Math.abs(child.treeParm.getCenter_y() - node.treeParm.getCenter_y()));
                 insertLayout.addView(lines, layoutParams);
 
                 WigetController.setLayout(lines, node.treeParm.getRightpoint_x(),
-                        node.treeParm.getRightpoint_y());
-            }else if (node.treeParm.center_y > child.treeParm.center_y){
-                lines = new DrawGeometryView(this, 0, Math.abs(child.treeParm.getCenter_y() - node.treeParm.getCenter_y()),Math.abs(child.treeParm.getLeftpoint_x() - node.treeParm.getRightpoint_x()),0, null
-                );
+                        node.treeParm.rightpoint_y);
+            } else if (node.treeParm.center_y > child.treeParm.center_y) {
+                lines = new DrawGeometryView(this, 0, Math.abs(child.treeParm.center_y - node.treeParm.center_y)
+                        , Math.abs(child.treeParm.leftpoint_x - node.treeParm.rightpoint_x), 0,ColorUtils.rankColor.get(child.rank) );
                 lines.invalidate();
 
                 AlphaAnimation alphaAnimation = new AlphaAnimation(0, 1);
@@ -105,14 +114,16 @@ public class MindTreeEngine extends AppCompatActivity {
                 alphaAnimation.setFillAfter(true);
                 lines.setAnimation(alphaAnimation);
 
-                RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(Math.abs(child.treeParm.getLeftpoint_x() - node.treeParm.getRightpoint_x()), Math.abs(child.treeParm.getCenter_y() - node.treeParm.getCenter_y()));
+                RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(Math.abs(child.treeParm.leftpoint_x - node.treeParm.rightpoint_x)
+                        , Math.abs(child.treeParm.center_y - node.treeParm.center_y));
                 insertLayout.addView(lines, layoutParams);
 
-                WigetController.setLayout(lines, node.treeParm.getRightpoint_x(),
-                        child.treeParm.getRightpoint_y());
-            }else{
-                lines = new DrawGeometryView(this, 0, 5,Math.abs(child.treeParm.getLeftpoint_x() - node.treeParm.getRightpoint_x()),5, null
-                );
+                WigetController.setLayout(lines, node.treeParm.rightpoint_x,
+                        child.treeParm.rightpoint_y);
+            } else {
+                lines = new DrawGeometryView(this, 0, 5,
+                        Math.abs(child.treeParm.leftpoint_x - node.treeParm.rightpoint_x),
+                        5, ColorUtils.rankColor.get(child.rank));
                 lines.invalidate();
 
                 AlphaAnimation alphaAnimation = new AlphaAnimation(0, 1);
@@ -120,21 +131,19 @@ public class MindTreeEngine extends AppCompatActivity {
                 alphaAnimation.setFillAfter(true);
                 lines.setAnimation(alphaAnimation);
 
-                RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(Math.abs(child.treeParm.getLeftpoint_x() - node.treeParm.getRightpoint_x()), 10);
+                RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(Math.abs(child.treeParm.leftpoint_x - node.treeParm.rightpoint_x), 10);
                 insertLayout.addView(lines, layoutParams);
 
-                WigetController.setLayout(lines, node.treeParm.getRightpoint_x(),
-                        node.treeParm.rightpoint_y-5);
+                WigetController.setLayout(lines, node.treeParm.rightpoint_x,
+                        node.treeParm.rightpoint_y - 5);
 
             }
 
         }
-
         for (Node child :
                 node.children) {
             if (child.hasChildren()) drawTree(child);
         }
-
     }
 
     /**
@@ -146,8 +155,8 @@ public class MindTreeEngine extends AppCompatActivity {
     private myTextView drawNode(Node node) {
 
         //增加的节点
-        myTextView textView = new myTextView(this, null);
-        textView.setTextColor(Color.BLACK);
+        final myTextView textView = new myTextView(this, null);
+        textView.setTextColor(Color.WHITE);
         textView.setTextSize(20);
         textView.setText(node.id);
         textView.setMaxLines(2);
@@ -161,15 +170,39 @@ public class MindTreeEngine extends AppCompatActivity {
             ViewIds.putViewID(node.getId(), id);
             textView.setId(id);
         }
-        textView.setBorderColor(getResources().getColor(R.color.blue));
+        //改变框的颜色
+        textView.setBorderColor(ColorUtils.rankColor.get(node.rank));
+        if (node.type == 1) {
+            //TODO
+            textView.setBackgroundColor(ColorUtils.rankColor.get(node.rank));
+            textView.setTextColor(Color.BLACK);
+        }
+
+        PopList popList = new PopList(this);
+        popList.setNormalBackgroundColor(Color.GRAY);
+        popList.setNormalTextColor(Color.WHITE);
+        popList.setDividerColor(Color.GRAY);
+        popList.bind(textView, popMenuItemList, new PopList.PopupListListener() {
+            @Override
+            public boolean showPopupList(View adapterView, View contextView, int contextPosition) {
+                return true;
+            }
+
+            @Override
+            public void onPopupListClick(View contextView, int contextPosition, int position) {
+
+            }
+        });
+
+        //设置节点的点击事件
         textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 hv.smoothScrollTo((int) view.getX() - SCREEN_WIDTH / 2 + view.getWidth() / 2
                         , (int) view.getY() - SCREEN_HEIGHT / 2 + view.getHeight() / 2);
+
             }
         });
-
 
         //出现的动画
         ScaleAnimation animation = new ScaleAnimation(0.0f, 1.0f, 0.0f, 1.0f, Animation.RELATIVE_TO_SELF, 0.5f,
@@ -183,11 +216,7 @@ public class MindTreeEngine extends AppCompatActivity {
         //增加的View
         RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,
                 RelativeLayout.LayoutParams.WRAP_CONTENT);
-        //layoutParams.topMargin = y;
-        //layoutParams.bottomMargin = 1000;
-        //layoutParams.rightMargin = 200;
-        //layoutParams.leftMargin = x;
-        insertLayout.setBackgroundColor(Color.WHITE);
+        insertLayout.setBackgroundColor(Color.BLACK);
         insertLayout.addView(textView, layoutParams);
         WigetController.setLayout(textView, node.treeParm.leftpoint_x, node.treeParm.leftpoint_y - WigetController.getHeight(textView) / 2);
 

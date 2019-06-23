@@ -1503,10 +1503,10 @@ public class Imgproc {
 
 
     //
-    // C++:  void circle(Mat& img, Point center, int radius, Scalar color, int thickness = 1, int lineType = LINE_8, int shift = 0)
+    // C++:  void shape(Mat& img, Point center, int radius, Scalar color, int thickness = 1, int lineType = LINE_8, int shift = 0)
     //
 
-    //javadoc: circle(img, center, radius, color, thickness, lineType, shift)
+    //javadoc: shape(img, center, radius, color, thickness, lineType, shift)
     public static void circle(Mat img, Point center, int radius, Scalar color, int thickness, int lineType, int shift)
     {
         
@@ -1515,7 +1515,7 @@ public class Imgproc {
         return;
     }
 
-    //javadoc: circle(img, center, radius, color, thickness)
+    //javadoc: shape(img, center, radius, color, thickness)
     public static void circle(Mat img, Point center, int radius, Scalar color, int thickness)
     {
         
@@ -1524,7 +1524,7 @@ public class Imgproc {
         return;
     }
 
-    //javadoc: circle(img, center, radius, color)
+    //javadoc: shape(img, center, radius, color)
     public static void circle(Mat img, Point center, int radius, Scalar color)
     {
         
@@ -3145,7 +3145,7 @@ public class Imgproc {
     private static native void calcHist_0(long images_mat_nativeObj, long channels_mat_nativeObj, long mask_nativeObj, long hist_nativeObj, long histSize_mat_nativeObj, long ranges_mat_nativeObj, boolean accumulate);
     private static native void calcHist_1(long images_mat_nativeObj, long channels_mat_nativeObj, long mask_nativeObj, long hist_nativeObj, long histSize_mat_nativeObj, long ranges_mat_nativeObj);
 
-    // C++:  void circle(Mat& img, Point center, int radius, Scalar color, int thickness = 1, int lineType = LINE_8, int shift = 0)
+    // C++:  void shape(Mat& img, Point center, int radius, Scalar color, int thickness = 1, int lineType = LINE_8, int shift = 0)
     private static native void circle_0(long img_nativeObj, double center_x, double center_y, int radius, double color_val0, double color_val1, double color_val2, double color_val3, int thickness, int lineType, int shift);
     private static native void circle_1(long img_nativeObj, double center_x, double center_y, int radius, double color_val0, double color_val1, double color_val2, double color_val3, int thickness);
     private static native void circle_2(long img_nativeObj, double center_x, double center_y, int radius, double color_val0, double color_val1, double color_val2, double color_val3);

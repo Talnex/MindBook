@@ -44,7 +44,7 @@ public class ScanFragment extends Fragment {
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         if (!(activity instanceof IScanner)) {
-            throw new ClassCastException("Activity must implement IScanner");
+            throw new ClassCastException("com.talnex.wrongsbook.Activity must implement IScanner");
         }
         this.scanner = (IScanner) activity;
     }

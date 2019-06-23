@@ -27,6 +27,7 @@ public class sample {
         node5.setId("node5");
         Node node6 = new Node(node2.id);
         node6.setId("node6");
+        node6.type = 1;
 
         node.addChild(node1);
         node.addChild(node2);
@@ -84,6 +85,7 @@ public class sample {
         d1.setId("d1");
         Node d2 = new Node(d.id);
         d2.setId("d2");
+        d2.type = 1;
 
         Node d3 = new Node(d2.id);
         d3.setId("d3");
@@ -100,6 +102,7 @@ public class sample {
         Node b = new Node(a.id);
         b.setId("b");
         Node c = new Node(a.id);
+        b.type = 1;
         c.setId("c");
         Node b1 = new Node(b.id);
         b1.setId("b1");
@@ -110,9 +113,11 @@ public class sample {
         Node b4 = new Node(b1.id);
         b4.setId("b4");
         Node b5 = new Node(b1.id);
+        b4.type = 1;
         b5.setId("b5");
         Node b6 = new Node(b1.id);
         b6.setId("b6");
+        b6.type = 1;
         Node b7 = new Node(b2.id);
         b7.setId("b7");
         Node b8 = new Node(b2.id);
@@ -125,6 +130,7 @@ public class sample {
         c2.setId("c2");
         Node c3 = new Node(c.id);
         c3.setId("c3");
+        c3.type = 1;
         Node c4 = new Node(c3.id);
         c4.setId("c4");
         Node c5 = new Node(c3.id);

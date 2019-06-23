@@ -1,6 +1,7 @@
 package com.talnex.wrongsbook.Utils;
 
 import android.content.Context;
+import android.widget.RelativeLayout;
 
 public class DisplayUtil {
     public static int dip2px(Context context, float dipValue){
@@ -11,4 +12,5 @@ public class DisplayUtil {
         final float scale = context.getResources().getDisplayMetrics().density;
         return (int)(pxValue / scale + 0.5f);
     }
+
 }

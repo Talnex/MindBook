@@ -9,17 +9,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ScanAcitivity">
+        <activity android:name=".Activity.ScanAcitivity">
 
         </activity>
-        <activity android:name=".MainActivity">
-            >
-
-        </activity>
-        <activity android:name=".MindMapActivity">
-
-        </activity>
-        <activity android:name=".MindTreeEngine"
+        <activity android:name=".Activity.MindTreeEngine"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             >
             <intent-filter>

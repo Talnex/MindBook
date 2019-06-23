@@ -1,4 +1,4 @@
-package com.talnex.wrongsbook.Utils;
+package com.talnex.wrongsbook.MindMap;
 
 import com.talnex.wrongsbook.Beans.Node;
 
@@ -12,7 +12,7 @@ import java.util.Stack;
 
 public class TreeUtil {
     public static int GAP = 100;
-    public static int CENG_CAP = 500;
+    public static int CENG_CAP = 450;
     public static int SCREEN_WIDTH;
     public static int SCREEN_HEIGHT;
 
@@ -32,8 +32,10 @@ public class TreeUtil {
         if (children.size() == 0) {
             list_noChildren.add(node);
         } else {
-            for (Node child :
-                    children) {
+            for (int i = 0; i < children.size(); i++) {
+                Node child = children.get(i);
+                if (!child.url.equals("")) child.type = 1;
+                child.rank = i;
                 loadAllNode(child);
             }
         }

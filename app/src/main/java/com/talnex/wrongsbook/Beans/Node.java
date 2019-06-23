@@ -11,7 +11,7 @@ public class Node {
     public int type;
     public String info;
     public String description;
-    public String url;
+    public String url = "";
     public List<Node> children = new ArrayList<>();
     public int rank;
     public TreeParm treeParm = new TreeParm();

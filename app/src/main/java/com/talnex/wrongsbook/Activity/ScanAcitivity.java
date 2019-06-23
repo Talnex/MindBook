@@ -1,4 +1,4 @@
-package com.talnex.wrongsbook;
+package com.talnex.wrongsbook.Activity;
 
 import android.Manifest;
 import android.annotation.TargetApi;
@@ -17,6 +17,7 @@ import android.widget.ImageView;
 
 import com.scanlibrary.ScanActivity;
 import com.scanlibrary.ScanConstants;
+import com.talnex.wrongsbook.R;
 
 import java.io.IOException;
 
