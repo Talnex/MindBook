@@ -97,8 +97,6 @@ public class MainActivity extends AppCompatActivity {
         textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-
                 hv.smoothScrollTo((int) view.getX() - SCREEN_WIDTH / 2 + view.getWidth() / 2
                         , (int) view.getY() - SCREEN_HEIGHT / 2 + view.getHeight() / 2);
             }

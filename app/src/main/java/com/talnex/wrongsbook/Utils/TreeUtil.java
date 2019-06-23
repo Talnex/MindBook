@@ -11,8 +11,8 @@ import java.util.Map;
 import java.util.Stack;
 
 public class TreeUtil {
-    public static int GAP = 1;
-    public static int CENG_CAP = 1;
+    public static int GAP = 100;
+    public static int CENG_CAP = 500;
     public static int SCREEN_WIDTH;
     public static int SCREEN_HEIGHT;
 
@@ -39,6 +39,30 @@ public class TreeUtil {
         }
     }
 
+    /**
+     * 根据计算好的offset计算xy值
+     * @param node
+     */
+    public static void computeXY(Node node) {
+        List<Node> children = new ArrayList<>();
+        children = node.children;
+        int x = node.treeParm.leftpoint_x + CENG_CAP;
+        int y = node.treeParm.leftpoint_y - node.treeParm.offset_up;
+        children.get(0).treeParm.leftpoint_x = x;
+        children.get(0).treeParm.leftpoint_y = y;
+        if (children.get(0).hasChildren()) {
+            computeXY(children.get(0));
+        }
+        for (int i = 1; i < children.size(); i++) {
+            y = y + getDownOffSet(children.get(i - 1)) + 2 * GAP + getUpOffSet(children.get(i));
+            children.get(i).treeParm.leftpoint_x = x;
+            children.get(i).treeParm.leftpoint_y = y;
+            if (children.get(i).hasChildren()) {
+                computeXY(children.get(i));
+            }
+        }
+    }
+
     public static void computeOffSet() {
         Collections.sort(list_noChildren, new Comparator<Node>() {
             @Override
@@ -57,8 +81,6 @@ public class TreeUtil {
                 list_noChildren) {
             child.treeParm.offset_down = 0;
             child.treeParm.offset_up = 0;
-            child.treeParm.alloffset_up = 0;
-            child.treeParm.alloffset_down = 0;
         }
 
         //TODO: 对这棵树进行后序遍历

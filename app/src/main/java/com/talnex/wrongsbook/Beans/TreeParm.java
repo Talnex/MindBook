@@ -16,9 +16,6 @@ public class TreeParm {
     public int hight;
     public int width;
 
-    public int alloffset_up;
-    public int alloffset_down;
-
     public int getWidth() {
         return width;
     }

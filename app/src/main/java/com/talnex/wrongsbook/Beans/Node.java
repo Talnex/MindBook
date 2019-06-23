@@ -12,7 +12,7 @@ public class Node {
     public String info;
     public String description;
     public String url;
-    public List<Node> children = null;
+    public List<Node> children = new ArrayList<>();
     public int rank;
     public TreeParm treeParm = new TreeParm();
     public List<String> keywords = null;
@@ -33,7 +33,7 @@ public class Node {
 
     public Node(String parent) {
         this.parent = parent;
-        id = UUID.getUUID();
+        id = UUID.generateShortUuid();
         type = 0;
 
     }
