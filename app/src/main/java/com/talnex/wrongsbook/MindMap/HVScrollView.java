@@ -3,6 +3,7 @@ package com.talnex.wrongsbook.MindMap;
 import android.content.Context;
 import android.graphics.Rect;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.FocusFinder;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -13,10 +14,12 @@ import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Scroller;
 
 import com.talnex.wrongsbook.R;
+import com.talnex.wrongsbook.Utils.DisplayUtil;
 
 import java.util.List;
 
@@ -36,6 +39,8 @@ public class HVScrollView extends FrameLayout {
 
     private final Rect mTempRect = new Rect();
     private Scroller mScroller;
+
+    private float offset = 0;
 
     /**
      * Flag to indicate that we are moving focus ourselves. This is so the
@@ -563,14 +568,15 @@ public class HVScrollView extends FrameLayout {
                     //进行一些计算
 
                     RelativeLayout relativeLayout = findViewById(R.id.layout_zone);
-                    float temp = relativeLayout.getScaleX();
-                    float des = getSpacing(ev);
-                    scale = scale * des / spacing / temp;
-                    //scale = scale * des / spacing ;
+                    float res = getSpacing(ev);
+
+                    scale = res / spacing - (1-offset) ;
+
                     relativeLayout.setScaleY(scale);
                     relativeLayout.setScaleX(scale);
-                    //setScaleX(scale);
-                    //setScaleY(scale);
+                    //scrollTo(relativeLayout.getLeft() + relativeLayout.getWidth() / 2 + DisplayUtil.SCREEN_WIDTH / 2
+                    //       , relativeLayout.getTop() + relativeLayout.getHeight() / 2 + DisplayUtil.SCREEN_HEIGHT / 2);
+                    //scrollTo(getWidth()/2,getHeight()/2);
 
                 }
 
@@ -614,6 +620,7 @@ public class HVScrollView extends FrameLayout {
                 break;
             case MotionEvent.ACTION_POINTER_UP:
                 moveType = 0;
+                offset = scale;
                 onSecondaryPointerUp(ev);
                 break;
         }

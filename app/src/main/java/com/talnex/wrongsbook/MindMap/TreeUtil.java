@@ -11,10 +11,9 @@ import java.util.Map;
 import java.util.Stack;
 
 public class TreeUtil {
-    public static int GAP = 100;
+    public static int GAP = 130;
     public static int CENG_CAP = 450;
-    public static int SCREEN_WIDTH;
-    public static int SCREEN_HEIGHT;
+
 
     public static Stack<Node> stack = new Stack<>();
 

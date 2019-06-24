@@ -6,11 +6,12 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.util.AttributeSet;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.talnex.wrongsbook.R;
 
-public class myTextView extends TextView {
+public class myTextView extends android.support.v7.widget.AppCompatEditText {
     private static final int STROKE_WIDTH = 2;
     private int borderCol;
 
@@ -40,7 +41,7 @@ public class myTextView extends TextView {
             return;
 
         borderPaint.setColor(borderCol);
-        borderPaint.setStrokeWidth(10);
+        borderPaint.setStrokeWidth(20);
 
         int w = this.getMeasuredWidth();
         int h = this.getMeasuredHeight();
