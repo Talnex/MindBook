@@ -1,6 +1,10 @@
 package com.talnex.wrongsbook.Activity;
 
+import android.Manifest;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v7.app.AppCompatActivity;
@@ -38,10 +42,13 @@ public class MindTreeEngine extends AppCompatActivity {
     private List<Fragment> fragments = new ArrayList<>();
     private List<String> titleList = null;
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.content_main);
+
+        ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.INTERNET},0);
 
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
@@ -55,6 +62,7 @@ public class MindTreeEngine extends AppCompatActivity {
         String[] titles = {"我", "社区", "题目", ""};
         titleList = Arrays.asList(titles);
         coolMenuFrameLayout.setTitles(titleList);
+        coolMenuFrameLayout.setScrollBarSize(20);
 
         fragments.add(new Fragment1());
         fragments.add(new ComunityFragment());

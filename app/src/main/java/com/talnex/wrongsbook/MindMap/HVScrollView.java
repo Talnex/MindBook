@@ -40,7 +40,7 @@ public class HVScrollView extends FrameLayout {
     private final Rect mTempRect = new Rect();
     private Scroller mScroller;
 
-    private float offset = 0;
+    private float offset = 1;
 
     /**
      * Flag to indicate that we are moving focus ourselves. This is so the
@@ -570,13 +570,17 @@ public class HVScrollView extends FrameLayout {
                     RelativeLayout relativeLayout = findViewById(R.id.layout_zone);
                     float res = getSpacing(ev);
 
-                    scale = res / spacing - (1-offset) ;
+                    scale = res / spacing - (1 - offset);
+
+                    if (scale > 5) break;
+                    if (scale < 0.3) break;
 
                     relativeLayout.setScaleY(scale);
                     relativeLayout.setScaleX(scale);
-                    //scrollTo(relativeLayout.getLeft() + relativeLayout.getWidth() / 2 + DisplayUtil.SCREEN_WIDTH / 2
-                    //       , relativeLayout.getTop() + relativeLayout.getHeight() / 2 + DisplayUtil.SCREEN_HEIGHT / 2);
-                    //scrollTo(getWidth()/2,getHeight()/2);
+//                    scrollTo(getWidth() / 2
+//                           , getHeight() / 2 );
+//                    //scrollTo(getWidth()/2,getHeight()/2);
+//                    Log.d("test",getHeight()/2+"");
 
                 }
 

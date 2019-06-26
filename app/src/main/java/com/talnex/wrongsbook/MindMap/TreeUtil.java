@@ -11,10 +11,10 @@ import java.util.Map;
 import java.util.Stack;
 
 public class TreeUtil {
-    public static int GAP = 130;
-    public static int CENG_CAP = 450;
+    public static int GAP = 55;
+    public static int CENG_CAP = 160;
 
-
+    public static int treeHeight;
     public static Stack<Node> stack = new Stack<>();
 
     public static Node mindTree;
@@ -34,6 +34,7 @@ public class TreeUtil {
             for (int i = 0; i < children.size(); i++) {
                 Node child = children.get(i);
                 if (!child.url.equals("")) child.type = 1;
+                child.no = i;
                 child.rank = i;
                 loadAllNode(child);
             }
@@ -42,6 +43,7 @@ public class TreeUtil {
 
     /**
      * 根据计算好的offset计算xy值
+     *
      * @param node
      */
     public static void computeXY(Node node) {
@@ -93,7 +95,7 @@ public class TreeUtil {
         }
 
         re_compute(node);
-
+        treeHeight = getDownOffSet(node)+getUpOffSet(node);
     }
 
     /**
@@ -132,7 +134,7 @@ public class TreeUtil {
      * @param node
      */
 
-    private static void computeBP(Node node) {
+    public static void computeBP(Node node) {
         if (node != null) {
             int offset_up = 0;
             int offset_down = 0;

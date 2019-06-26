@@ -14,6 +14,7 @@ public class Node {
     public String url = "";
     public List<Node> children = new ArrayList<>();
     public int rank;
+    public int no;
     public TreeParm treeParm = new TreeParm();
     public List<String> keywords = null;
     public String parent;
@@ -30,6 +31,13 @@ public class Node {
         this.rank = rank;
     }
 
+    public int getNo() {
+        return no;
+    }
+
+    public void setNo(int no) {
+        this.no = no;
+    }
 
     public Node(String parent) {
         this.parent = parent;

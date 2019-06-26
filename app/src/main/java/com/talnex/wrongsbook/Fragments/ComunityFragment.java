@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.DownloadListener;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 
 import com.talnex.wrongsbook.R;
 
@@ -27,8 +28,17 @@ public class ComunityFragment extends Fragment {
 
 
         webView = view.findViewById(R.id.webview);
-        webView.loadUrl("https://blog.csdn.net/lowprofile_coding/article/details/77928614");
+        webView.loadUrl("https://www.baidu.com");
 
+        webView.setWebViewClient(new WebViewClient(){
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                view.loadUrl(url);
+                return true;
+            }
+        });
+
+        webView.setDownloadListener(new MyDownloadListenter());
         return view;
     }
 
@@ -42,5 +52,15 @@ public class ComunityFragment extends Fragment {
         super.onAttach(context);
     }
 
+    //创建DownloadListener (webkit包)
+    class MyDownloadListenter implements DownloadListener{
+
+        @Override
+        public void onDownloadStart(String url, String userAgent,
+                                    String contentDisposition, String mimetype, long contentLength) {
+            System.out.println("url ==== >" + url);
+        }
+
+    }
 
 }

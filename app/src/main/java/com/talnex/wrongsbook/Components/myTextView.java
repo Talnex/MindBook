@@ -41,13 +41,13 @@ public class myTextView extends android.support.v7.widget.AppCompatEditText {
             return;
 
         borderPaint.setColor(borderCol);
-        borderPaint.setStrokeWidth(20);
+        borderPaint.setStrokeWidth(10);
 
         int w = this.getMeasuredWidth();
         int h = this.getMeasuredHeight();
 
         RectF r = new RectF(2, 2, w - 2, h - 2);
-        canvas.drawRoundRect(r, 20, 20, borderPaint);
+        canvas.drawRoundRect(r, 10, 10, borderPaint);
         super.onDraw(canvas);
     }
 

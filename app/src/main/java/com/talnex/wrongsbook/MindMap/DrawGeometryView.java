@@ -55,7 +55,7 @@ public class DrawGeometryView extends View {
         Paint redPaint = new Paint();
         redPaint.setAntiAlias(true); // 抗锯齿效果,显得绘图平滑
         redPaint.setColor(color); // 设置画笔颜色
-        redPaint.setStrokeWidth(15.0f);// 设置笔触宽度
+        redPaint.setStrokeWidth(5.0f);// 设置笔触宽度
         redPaint.setStyle(Style.STROKE);// 设置画笔的填充类型(完全填充)
         redPaint.setTextSize(50);//字体
 
