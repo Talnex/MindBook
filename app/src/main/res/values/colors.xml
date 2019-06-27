@@ -5,4 +5,7 @@
     <color name="colorAccent">#D81B60</color>
     <color name="write">#ffffff</color>
     <color name="black">#000000</color>
+    <color name="iron">#CCCCCC</color>
+
+    <color name="primary">#E43F3F</color>
 </resources>

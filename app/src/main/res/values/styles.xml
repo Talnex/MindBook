@@ -12,5 +12,12 @@
         <attr name="borderColor" format="color"/>
     </declare-styleable>
 
+    <style name="AppTheme.Dark.Dialog" parent="Theme.AppCompat.Dialog">
+        <item name="colorAccent">@color/write</item>
+        <item name="android:textColorPrimary">@color/iron</item>
+        <item name="android:background">@color/primary</item>
+
+    </style>
+
 
 </resources>

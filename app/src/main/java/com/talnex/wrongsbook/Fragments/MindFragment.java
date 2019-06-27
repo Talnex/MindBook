@@ -29,6 +29,8 @@ import com.talnex.wrongsbook.Beans.Node;
 import com.talnex.wrongsbook.Components.PopList;
 import com.talnex.wrongsbook.Components.myTextView;
 import com.talnex.wrongsbook.Components.onDoubleClickListener;
+import com.talnex.wrongsbook.File.JsonUtil;
+import com.talnex.wrongsbook.File.MbFile;
 import com.talnex.wrongsbook.MindMap.DrawGeometryView;
 import com.talnex.wrongsbook.MindMap.HVScrollView;
 import com.talnex.wrongsbook.MindMap.TreeUtil;
@@ -82,14 +84,15 @@ public class MindFragment extends Fragment {
         insertLayout = view.findViewById(R.id.layout_zone);
         //insertLayout.setPadding(1000,1000,1000,1000);
 
-        Node node = sample.getANode();
+        Node node = JsonUtil.jsontoNode(MbFile.readTreeFile());
+//        Node node = sample.getANode();
         node.treeParm.leftpoint_x = 720;
         node.treeParm.leftpoint_y = 5000;
         TreeUtil.initUtil(node);
         TreeUtil.loadAllNode(node);
         TreeUtil.computeOffSet();
         TreeUtil.computeXY(node);
-        Log.d("left", TreeUtil.treeHeight + "");
+        MbFile.writeTreeFile(JsonUtil.nodetoJson(node));
 
         //String json = JSON.toJSONString(node);
         //JsonUtil.e("json", json);
@@ -347,6 +350,27 @@ public class MindFragment extends Fragment {
         ViewIds.list_Lines.clear();
 
         drawTree(parentnode);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        MbFile.writeTreeFile(JsonUtil.nodetoJson(TreeUtil.mindTree));
+        Log.d("test","destroy");
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        MbFile.writeTreeFile(JsonUtil.nodetoJson(TreeUtil.mindTree));
+        Log.d("test","pause");
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        MbFile.writeTreeFile(JsonUtil.nodetoJson(TreeUtil.mindTree));
+        Log.d("test","stop");
     }
 }
 
