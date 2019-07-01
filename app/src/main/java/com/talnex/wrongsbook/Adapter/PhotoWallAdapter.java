@@ -20,13 +20,14 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.OnLongClick;
 
 
 public class PhotoWallAdapter extends RecyclerView.Adapter<PhotoWallAdapter.MyViewHolder> {
 
-    Context        mContext;
-    List<String>   mDatas;
-    int            mMaxNum;
+    Context mContext;
+    List<String> mDatas;
+    int mMaxNum;
     LayoutInflater mInflater;
     boolean mIsDelete = false;
     OnItemClickListener mOnItemClickListener;
@@ -63,7 +64,7 @@ public class PhotoWallAdapter extends RecyclerView.Adapter<PhotoWallAdapter.MyVi
                     String filePath = mDatas.get(position);
                     holder.mIvAddPhoto.setVisibility(View.GONE);
                     holder.mIvDisPlayItemPhoto.setVisibility(View.VISIBLE);
-                    Picasso.with(mContext).load(new File(filePath)).centerCrop().resize(DisplayUtil.dip2px(mContext,120),DisplayUtil.dip2px(mContext,120))
+                    Picasso.with(mContext).load(new File(filePath)).centerCrop().resize(DisplayUtil.dip2px(mContext, 120), DisplayUtil.dip2px(mContext, 120))
                             .error(R.mipmap.pictures_no).into(holder.mIvDisPlayItemPhoto);
 
                     if (mIsDelete) {
@@ -83,7 +84,6 @@ public class PhotoWallAdapter extends RecyclerView.Adapter<PhotoWallAdapter.MyVi
                     holder.mIvError.setVisibility(View.GONE);
                     holder.mIvUploadingBg.setVisibility(View.GONE);
 
-
                 }
 
             }
@@ -93,10 +93,10 @@ public class PhotoWallAdapter extends RecyclerView.Adapter<PhotoWallAdapter.MyVi
             holder.mIvDisPlayItemPhoto.setVisibility(View.VISIBLE);
             holder.mIvAddPhoto.setVisibility(View.GONE);
 
-            Picasso.with(mContext).load(new File(filePath)).centerCrop().resize(DisplayUtil.dip2px(mContext,120),DisplayUtil.dip2px(mContext,120))
+            Picasso.with(mContext).load(new File(filePath)).centerCrop().resize(DisplayUtil.dip2px(mContext, 120), DisplayUtil.dip2px(mContext, 120))
                     .error(R.mipmap.pictures_no).into(holder.mIvDisPlayItemPhoto);
             if (mIsDelete) {
-               holder.mIvDelete.setVisibility(View.VISIBLE);
+                holder.mIvDelete.setVisibility(View.VISIBLE);
                 holder.mIvUploadingBg.setVisibility(View.VISIBLE);
             } else {
                 holder.mIvDelete.setVisibility(View.GONE);
@@ -129,16 +129,16 @@ public class PhotoWallAdapter extends RecyclerView.Adapter<PhotoWallAdapter.MyVi
         @BindView(R.id.ivError)
         ImageView mIvError;
         @BindView(R.id.tvProgress)
-        TextView  mTvProgress;
+        TextView mTvProgress;
         @BindView(R.id.ivDelete)
         ImageView mIvDelete;
         @BindView(R.id.rootView)
-        View      mRootView;
+        View mRootView;
 
         public MyViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
-            initListener(itemView);
+            //initListener(itemView);
         }
 
         private void initListener(View itemView) {
@@ -148,13 +148,13 @@ public class PhotoWallAdapter extends RecyclerView.Adapter<PhotoWallAdapter.MyVi
                     if (mOnItemClickListener != null) {
                         mOnItemClickListener.onItemLongClick(v, getAdapterPosition());
                     }
-                    return false;
+                    return true;
                 }
             });
         }
 
 
-        @OnClick({R.id.ivAddPhoto, R.id.ivDelete,R.id.ivDisPlayItemPhoto})
+        @OnClick({R.id.ivAddPhoto, R.id.ivDelete, R.id.ivDisPlayItemPhoto})
         public void onClick(View view) {
             switch (view.getId()) {
                 case R.id.ivAddPhoto:
@@ -174,6 +174,17 @@ public class PhotoWallAdapter extends RecyclerView.Adapter<PhotoWallAdapter.MyVi
                     break;
             }
         }
+
+        @OnLongClick({R.id.ivDisPlayItemPhoto})
+        public boolean onLongClick(View v) {
+            if (v.getId() == R.id.ivDisPlayItemPhoto) {
+                if (mOnItemClickListener != null) {
+                    mOnItemClickListener.onItemLongClick(v, getAdapterPosition());
+                }
+            }
+            return true;
+        }
+
 
     }
 

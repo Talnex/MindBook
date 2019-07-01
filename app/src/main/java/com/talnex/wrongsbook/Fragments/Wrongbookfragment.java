@@ -103,18 +103,20 @@ public class Wrongbookfragment extends Fragment {
                 if (mDatas.size() < 10) {
                     if (position == mDatas.size()) showChoose();
                     else {
-                        if (!fileUrl.containsKey(mDatas.get(position))) {
-                            resposetext = "";
-                            try {
-                                uploadImg(mDatas.get(position));
-                                while (resposetext.equals("")) ;
-                                fileUrl.put(mDatas.get(position), JSON.parseObject(resposetext).getString("url"));
-                            } catch (IOException e) {
-                                e.printStackTrace();
+                        if (position != -1) {
+                            if (!fileUrl.containsKey(mDatas.get(position))) {
+                                resposetext = "";
+                                try {
+                                    uploadImg(mDatas.get(position));
+                                    while (resposetext.equals("")) ;
+                                    fileUrl.put(mDatas.get(position), JSON.parseObject(resposetext).getString("url"));
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                            } else {
+                                String mdurl = "\n![](" + fileUrl.get(mDatas.get(position)) + ")\n";
+                                input.getText().insert(input.getSelectionStart(), mdurl);
                             }
-                        } else {
-                            String mdurl = "\n![](" + fileUrl.get(mDatas.get(position)) + ")\n";
-                            input.getText().insert(input.getSelectionStart(), mdurl);
                         }
                     }
                 } else {
