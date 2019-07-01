@@ -34,13 +34,13 @@ import com.talnex.wrongsbook.Adapter.PhotoWallAdapter;
 import com.talnex.wrongsbook.Components.PopuChoooseWindow;
 import com.talnex.wrongsbook.Net.Userinfo;
 import com.talnex.wrongsbook.R;
+import com.talnex.wrongsbook.Utils.UUID;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-
 
 import butterknife.ButterKnife;
 import okhttp3.MediaType;
@@ -76,7 +76,7 @@ public class Wrongbookfragment extends Fragment {
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.wrongbookfragment, container, false);
         ButterKnife.bind(getActivity());
         mPhotoWallAdapter = new PhotoWallAdapter(getActivity(), mDatas, 10);
@@ -87,6 +87,52 @@ public class Wrongbookfragment extends Fragment {
             @Override
             public void onClick(View view) {
                 String inputtext = input.getText().toString();
+                String title = "";
+                String photo = null;
+                final StringBuilder text = new StringBuilder();
+                String[] tempstring = inputtext.split("\n");
+                if (tempstring[0].split("：")[0].equals("标题")) {
+                    title = tempstring[0].split("：")[1];
+                }
+                if (tempstring[1].split("：")[0].equals("头图")) {
+                    photo = tempstring[1].split("：")[1];
+                }
+                for (int i = 2; i < tempstring.length; i++) {
+                    text.append(tempstring[i]);
+                }
+
+                final OkHttpClient client = new OkHttpClient();
+                final String finalPhoto = photo;
+                final String finalTitle = title;
+                new Thread() {
+                    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+                    @Override
+                    public void run() {
+                        RequestBody requestBody = new MultipartBody.Builder()
+                                .setType(MultipartBody.FORM)
+                                .addFormDataPart("img", UUID.getUUID(),
+                                        RequestBody.create(MediaType.parse("image/png"), new File(mDatas.get(Integer.parseInt(finalPhoto)))))
+                                .addFormDataPart("title", finalTitle)
+                                .addFormDataPart("author",Userinfo.username)
+                                .addFormDataPart("text",text.toString())
+                                .build();
+
+                        Request request = new Request.Builder()
+                                .url("http://129.28.168.201:8888/upload/blog")
+                                .post(requestBody)
+                                .build();
+
+                        try (Response response = client.newCall(request).execute()) {
+                            if (!response.isSuccessful()) {
+                                resposetext = response.body().string();
+                                throw new IOException("Unexpected code " + response);
+                            }
+                            resposetext = response.body().string();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }.start();
 
 
             }
@@ -108,7 +154,9 @@ public class Wrongbookfragment extends Fragment {
                                 resposetext = "";
                                 try {
                                     uploadImg(mDatas.get(position));
+                                    Toast.makeText(getActivity(), "正在上传", Toast.LENGTH_LONG).show();
                                     while (resposetext.equals("")) ;
+                                    Toast.makeText(getActivity(), "上传成功", Toast.LENGTH_SHORT).show();
                                     fileUrl.put(mDatas.get(position), JSON.parseObject(resposetext).getString("url"));
                                 } catch (IOException e) {
                                     e.printStackTrace();
@@ -135,7 +183,6 @@ public class Wrongbookfragment extends Fragment {
     }
 
     private void uploadImg(final String path) throws IOException {
-        final String[] uploadResult = {""};
         final OkHttpClient client = new OkHttpClient();
         new Thread() {
             @RequiresApi(api = Build.VERSION_CODES.KITKAT)

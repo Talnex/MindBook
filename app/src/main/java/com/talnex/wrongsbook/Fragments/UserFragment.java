@@ -1,6 +1,7 @@
 package com.talnex.wrongsbook.Fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.Nullable;
@@ -12,10 +13,16 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import com.gc.materialdesign.views.ButtonFlat;
 import com.talnex.wrongsbook.Adapter.FileAdapter;
+import com.talnex.wrongsbook.Beans.Node;
+import com.talnex.wrongsbook.File.JsonUtil;
+import com.talnex.wrongsbook.File.MbFile;
 import com.talnex.wrongsbook.R;
+import com.talnex.wrongsbook.Utils.TreeUtil;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -26,10 +33,50 @@ public class UserFragment extends Fragment {
     private android.support.v7.widget.Toolbar toolbar;
     public static final String SDcard = Environment.getExternalStorageDirectory().getAbsolutePath();
     public static String currDir = SDcard + "/mindbook";
+    private ButtonFlat btn_expMD = null;
+    private ButtonFlat btn_inMD = null;
+    private ButtonFlat btn_expPDF = null;
+    private ButtonFlat btn_setting = null;
 
     FileAdapter adapter;
     List<File> list = new ArrayList<>();
     ArrayList<String> file_choosed_list = new ArrayList<>();
+
+    private class myOncliclistener implements View.OnClickListener{
+
+        @Override
+        public void onClick(View view) {
+            switch (view.getId()){
+                case R.id.btn_expMD:
+                    MbFile.exportMdFile(TreeUtil.mindTree);
+                    try {
+                        MbFile.writeMdFile(MbFile.newMdFile);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    break;
+                case  R.id.btn_inMD:
+                    try {
+                        Node node = MbFile.readMdFile(MbFile.MdFile);
+                        node.treeParm.leftpoint_x = 2000;
+                        node.treeParm.leftpoint_y = 5000;
+                        TreeUtil.initUtil(node);
+                        TreeUtil.loadAllNode(node);
+                        TreeUtil.computeOffSet();
+                        TreeUtil.computeXY(node);
+                        MbFile.writeTreeFile(JsonUtil.nodetoJson(node));
+
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    break;
+                case  R.id.btn_setting:
+                    Intent intent = new Intent(getActivity(),SettingFragment.class);
+                    startActivity(intent);
+                    break;
+            }
+        }
+    }
 
     @Override
     public void onAttach(Context context) {
@@ -45,6 +92,16 @@ public class UserFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.filechoosefragment, container, false);
+        btn_expMD = view.findViewById(R.id.btn_expMD);
+        btn_expPDF = view.findViewById(R.id.btn_expPDF);
+        btn_inMD = view.findViewById(R.id.btn_inMD);
+        btn_setting = view.findViewById(R.id.btn_setting);
+
+        myOncliclistener myOncliclistener = new myOncliclistener();
+        btn_setting.setOnClickListener(myOncliclistener);
+        btn_inMD.setOnClickListener(myOncliclistener);
+        btn_expMD.setOnClickListener(myOncliclistener);
+
         adapter = new FileAdapter(getActivity(), list, file_choosed_list);
         listView = (ListView) view.findViewById(R.id.listview_send);
         Log.d("test", currDir);

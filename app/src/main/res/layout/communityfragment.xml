@@ -10,8 +10,8 @@
 
         <ImageView
             android:layout_width="match_parent"
-            android:layout_height="45dp"
-            android:background="@color/write" />
+            android:layout_height="50dp"
+            android:background="#D8DCE0" />
 
         <WebView
             android:id="@+id/webview"

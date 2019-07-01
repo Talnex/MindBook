@@ -82,7 +82,6 @@ public class LoginActivity extends AppCompatActivity {
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     public void login() {
-        Log.d(TAG, "Login");
 
         if (!validate()) {
             onLoginFailed("账户或密码格式错误");
@@ -165,7 +164,6 @@ public class LoginActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        // Disable going back to the MainActivity
         moveTaskToBack(true);
     }
 

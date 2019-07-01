@@ -77,16 +77,16 @@ public class MindFragment extends Fragment {
         insertLayout = view.findViewById(R.id.layout_zone);
 
 
-//        if (MbFile.hasfile()){
-//            node = JsonUtil.jsontoNode(MbFile.readTreeFile());
-//        }else {
-//            node = new Node(null);
-//            node.setId("root");
-//        }
+        if (MbFile.hasfile()){
+            node = JsonUtil.jsontoNode(MbFile.readTreeFile());
+        }else {
+            node = new Node(null);
+            node.setId("root");
+        }
 
 //        Node node = sample.getANode();
-        node = sample.getANode();
-        node.setId("root");
+//        node = sample.getANode();
+//        node.setId("root");
         node.treeParm.leftpoint_x = 2000;
         node.treeParm.leftpoint_y = 5000;
         TreeUtil.initUtil(node);
@@ -428,14 +428,12 @@ public class MindFragment extends Fragment {
     public void onPause() {
         super.onPause();
         MbFile.writeTreeFile(JsonUtil.nodetoJson(TreeUtil.mindTree));
-        Log.d("test","pause");
     }
 
     @Override
     public void onStop() {
         super.onStop();
         MbFile.writeTreeFile(JsonUtil.nodetoJson(TreeUtil.mindTree));
-        Log.d("test","stop");
     }
 
     public void deletechildren(Node root){

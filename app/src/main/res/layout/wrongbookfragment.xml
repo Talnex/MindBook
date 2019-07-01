@@ -11,7 +11,7 @@
 
         <ImageView
             android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_height="60dp"
             android:background="#FF9800" />
 
         <LinearLayout
@@ -23,21 +23,22 @@
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/img_recycleview"
                 android:layout_width="match_parent"
-                android:layout_height="130dp">
+                android:layout_height="170dp">
 
             </android.support.v7.widget.RecyclerView>
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="400dp"
+                android:layout_height="420dp"
                 android:orientation="vertical">
 
                 <EditText
                     android:id="@+id/edit_text"
                     android:layout_width="match_parent"
-                    android:layout_height="400dp"
+                    android:layout_height="match_parent"
                     android:background="@null"
                     android:gravity="top"
+                    android:text="标题：\n头图：\n"
                     android:hint="请输入文字"
                     android:padding="15dp"
                     android:textColorHint="#888888" />
@@ -46,7 +47,6 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
-
 
                 <com.gc.materialdesign.views.ButtonFlat
                     android:id="@+id/uploadbtn"

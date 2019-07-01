@@ -18,7 +18,7 @@
             android:layout_weight="1"
             android:background="@android:color/transparent"
             android:drawableTop="@drawable/ic_image"
-            android:text="Original"
+            android:text="原图"
             android:textColor="@android:color/white" />
 
         <Button
@@ -29,7 +29,7 @@
             android:background="@android:color/transparent"
             android:drawableTop="@drawable/ic_enhamce_image"
             android:singleLine="true"
-            android:text="Magic color"
+            android:text="增强"
             android:textColor="@android:color/white" />
 
         <Button
@@ -40,7 +40,7 @@
             android:background="@android:color/transparent"
             android:drawableTop="@drawable/ic_gray"
             android:singleLine="true"
-            android:text="Gray Mode"
+            android:text="灰度"
             android:textColor="@android:color/white" />
 
         <Button
@@ -51,7 +51,7 @@
             android:background="@android:color/transparent"
             android:drawableTop="@drawable/ic_black_and_white"
             android:singleLine="true"
-            android:text="B and W"
+            android:text="二值"
             android:textColor="@android:color/white" />
     </LinearLayout>
 
@@ -60,9 +60,10 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="@color/bottom_background_color"
+        android:background="@color/black"
         android:orientation="horizontal"
         android:padding="@dimen/bottom_bar_padding"
+        android:textColor="#ffffff"
         android:text="@string/done" />
 
 
