@@ -1,4 +1,4 @@
-package com.talnex.wrongsbook.MindMap;
+package com.talnex.wrongsbook.Utils;
 
 import com.talnex.wrongsbook.Beans.Node;
 
@@ -11,6 +11,8 @@ import java.util.Map;
 import java.util.Stack;
 
 public class TreeUtil {
+    public static Node currentNode;
+
     public static int GAP = 55;
     public static int CENG_CAP = 160;
 
@@ -51,19 +53,23 @@ public class TreeUtil {
         children = node.children;
         int x = node.treeParm.leftpoint_x + CENG_CAP;
         int y = node.treeParm.leftpoint_y - node.treeParm.offset_up;
-        children.get(0).treeParm.leftpoint_x = x;
-        children.get(0).treeParm.leftpoint_y = y;
-        if (children.get(0).hasChildren()) {
-            computeXY(children.get(0));
-        }
-        for (int i = 1; i < children.size(); i++) {
-            y = y + getDownOffSet(children.get(i - 1)) + 2 * GAP + getUpOffSet(children.get(i));
-            children.get(i).treeParm.leftpoint_x = x;
-            children.get(i).treeParm.leftpoint_y = y;
-            if (children.get(i).hasChildren()) {
-                computeXY(children.get(i));
+        if (node.hasChildren()) {
+            children.get(0).treeParm.leftpoint_x = x;
+            children.get(0).treeParm.leftpoint_y = y;
+
+            if (children.get(0).hasChildren()) {
+                computeXY(children.get(0));
+            }
+            for (int i = 1; i < children.size(); i++) {
+                y = y + getDownOffSet(children.get(i - 1)) + 2 * GAP + getUpOffSet(children.get(i));
+                children.get(i).treeParm.leftpoint_x = x;
+                children.get(i).treeParm.leftpoint_y = y;
+                if (children.get(i).hasChildren()) {
+                    computeXY(children.get(i));
+                }
             }
         }
+
     }
 
     public static void computeOffSet() {

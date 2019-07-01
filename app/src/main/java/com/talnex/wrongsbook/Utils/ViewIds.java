@@ -1,7 +1,6 @@
 package com.talnex.wrongsbook.Utils;
 
 import com.talnex.wrongsbook.Beans.Node;
-import com.talnex.wrongsbook.MindMap.DrawGeometryView;
 
 import java.util.ArrayList;
 import java.util.HashMap;

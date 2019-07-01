@@ -10,30 +10,25 @@ import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.BounceInterpolator;
 import android.view.animation.ScaleAnimation;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.dxtt.coolmenu.CoolMenuFrameLayout;
-import com.talnex.wrongsbook.Activity.MindTreeEngine;
 import com.talnex.wrongsbook.Beans.Node;
 import com.talnex.wrongsbook.Components.PopList;
 import com.talnex.wrongsbook.Components.myTextView;
-import com.talnex.wrongsbook.Components.onDoubleClickListener;
 import com.talnex.wrongsbook.File.JsonUtil;
 import com.talnex.wrongsbook.File.MbFile;
-import com.talnex.wrongsbook.MindMap.DrawGeometryView;
-import com.talnex.wrongsbook.MindMap.HVScrollView;
-import com.talnex.wrongsbook.MindMap.TreeUtil;
+import com.talnex.wrongsbook.Components.DrawGeometryView;
+import com.talnex.wrongsbook.Components.HVScrollView;
+import com.talnex.wrongsbook.Utils.TreeUtil;
 import com.talnex.wrongsbook.R;
 import com.talnex.wrongsbook.Utils.ColorUtils;
 import com.talnex.wrongsbook.Utils.ViewIds;
@@ -46,9 +41,7 @@ import java.util.List;
 import static com.talnex.wrongsbook.Utils.DisplayUtil.SCREEN_HEIGHT;
 import static com.talnex.wrongsbook.Utils.DisplayUtil.SCREEN_WIDTH;
 
-/**
- * Created by peijiadi on 16/1/18.
- */
+
 public class MindFragment extends Fragment {
     private DrawGeometryView drawGeometryView;
     private RelativeLayout insertLayout;
@@ -57,7 +50,7 @@ public class MindFragment extends Fragment {
     private View lines;
     private List<String> popMenuItemList = new ArrayList<>();
     private CoolMenuFrameLayout coolMenuFrameLayout;
-
+    private Node node;
     private List<Fragment> fragments = new ArrayList<>();
     private List<String> titleList = null;
 
@@ -82,11 +75,19 @@ public class MindFragment extends Fragment {
 
         hv = view.findViewById(R.id.hvscrollview);
         insertLayout = view.findViewById(R.id.layout_zone);
-        //insertLayout.setPadding(1000,1000,1000,1000);
 
-        Node node = JsonUtil.jsontoNode(MbFile.readTreeFile());
+
+//        if (MbFile.hasfile()){
+//            node = JsonUtil.jsontoNode(MbFile.readTreeFile());
+//        }else {
+//            node = new Node(null);
+//            node.setId("root");
+//        }
+
 //        Node node = sample.getANode();
-        node.treeParm.leftpoint_x = 720;
+        node = sample.getANode();
+        node.setId("root");
+        node.treeParm.leftpoint_x = 2000;
         node.treeParm.leftpoint_y = 5000;
         TreeUtil.initUtil(node);
         TreeUtil.loadAllNode(node);
@@ -103,6 +104,23 @@ public class MindFragment extends Fragment {
         popMenuItemList.add("编辑");
         drawNode(node);
         drawTree(node);
+
+        ImageView imageView = view.findViewById(R.id.refresh);
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                TreeUtil.computeOffSet();
+                TreeUtil.computeXY(node);
+                reDraw(node);
+                myTextView myTextView = getActivity().findViewById(ViewIds.map_NodetoViewID.get(node));
+                insertLayout.setScaleX(1);
+                insertLayout.setScaleY(1);
+                HVScrollView.scale = 1;
+                HVScrollView.offset = 1;
+                hv.smoothScrollTo((int) (myTextView.getX() - SCREEN_WIDTH  / 2) + myTextView.getWidth() / 2
+                       , (int) (myTextView.getY() - SCREEN_HEIGHT  / 2) + myTextView.getHeight() / 2);
+            }
+        });
         return view;
     }
 
@@ -214,7 +232,9 @@ public class MindFragment extends Fragment {
         final myTextView textView = new myTextView(getActivity(), null);
         textView.setTextColor(Color.BLACK);
         textView.setTextSize(5);
-        textView.setText(node.id);
+        if (node.info!=null){
+            textView.setText(node.info);
+        }else textView.setText("编辑");
         textView.setMaxLines(2);
         textView.setEllipsize(TextUtils.TruncateAt.END);
         textView.setMaxEms(10);
@@ -237,60 +257,112 @@ public class MindFragment extends Fragment {
             textView.setTextColor(Color.BLACK);
         }
 
+        if (!node.id.equals("root")) {
+            PopList popList = new PopList(getActivity());
+            popList.setNormalBackgroundColor(Color.GRAY);
+            popList.setNormalTextColor(Color.WHITE);
+            popList.setDividerColor(Color.GRAY);
+            popList.bind(textView, popMenuItemList, new PopList.PopupListListener() {
+                @Override
+                public boolean showPopupList(View adapterView, View contextView, int contextPosition) {
+                    return true;
+                }
 
-        PopList popList = new PopList(getActivity());
-        popList.setNormalBackgroundColor(Color.GRAY);
-        popList.setNormalTextColor(Color.WHITE);
-        popList.setDividerColor(Color.GRAY);
-        popList.bind(textView, popMenuItemList, new PopList.PopupListListener() {
-            @Override
-            public boolean showPopupList(View adapterView, View contextView, int contextPosition) {
-                return true;
-            }
+                @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
+                @Override
+                public void onPopupListClick(View contextView, int contextPosition, int position) {
+                    switch (position) {
+                        //同级节点
+                        case 0: {
+                            int viewid = contextView.getId();
+                            Node node = ViewIds.getNodefromViewId(viewid);
+                            int no = node.no;
+                            node = TreeUtil.map_IDtoClass.get(node.parent);
+                            Node newnode = new Node(node.id);
+                            TreeUtil.map_IDtoClass.put(newnode.id, newnode);
+                            node.addChild(newnode, no + 1);
+                            reDraw(node);
+                            break;
+                        }
+                        //下一级节点
+                        case 1: {
+                            int viewid = contextView.getId();
+                            Node node = ViewIds.getNodefromViewId(viewid);
+                            int no = node.no;
+                            Node newnode = new Node(node.id);
+                            TreeUtil.map_IDtoClass.put(newnode.id, newnode);
+                            if (node.children.size() != 0) {
+                                node.addChild(newnode, node.children.size() - 1);
+                            } else node.children.add(newnode);
+                            reDraw(node);
+                            break;
+                        }
+                        //删除
+                        case 2: {
+                            int viewid = contextView.getId();
+                            Node node = ViewIds.getNodefromViewId(viewid);
+                            TreeUtil.map_IDtoClass.get(node.parent).children.remove(node);
+                            deletechildren(node);
+                            TreeUtil.computeOffSet();
+                            TreeUtil.computeXY(TreeUtil.mindTree);
+                            reDraw(TreeUtil.mindTree);
+                            break;
+                        }
+                        //编辑
+                        case 3: {
+                            coolMenuFrameLayout = getActivity().findViewById(R.id.rl_main);
+                            coolMenuFrameLayout.toggle();
+                            int viewid = contextView.getId();
+                            TreeUtil.currentNode = ViewIds.getNodefromViewId(viewid);
+                        }
 
-            @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
-            @Override
-            public void onPopupListClick(View contextView, int contextPosition, int position) {
-                switch (position) {
-                    //同级节点
-                    case 0: {
-                        int viewid = contextView.getId();
-                        Node node = ViewIds.getNodefromViewId(viewid);
-                        int no = node.no;
-                        node = TreeUtil.map_IDtoClass.get(node.parent);
-                        Node newnode = new Node(node.id);
-                        TreeUtil.map_IDtoClass.put(newnode.id, newnode);
-                        node.addChild(newnode, no + 1);
-                        reDraw(node);
-                        break;
-                    }
-                    //下一级节点
-                    case 1: {
-                        int viewid = contextView.getId();
-                        Node node = ViewIds.getNodefromViewId(viewid);
-                        int no = node.no;
-                        Node newnode = new Node(node.id);
-                        TreeUtil.map_IDtoClass.put(newnode.id, newnode);
-                        if (node.children.size() != 0) {
-                            node.addChild(newnode, node.children.size() - 1);
-                        } else node.children.add(newnode);
-                        reDraw(node);
-                        break;
-                    }
-                    //删除
-                    case 2: {
-
-                        break;
-                    }
-                    case 3:{
-                        coolMenuFrameLayout = getActivity().findViewById(R.id.rl_main);
-                        coolMenuFrameLayout.toggle();
                     }
 
                 }
+            });
+        }else {
+            PopList popList = new PopList(getActivity());
+            popList.setNormalBackgroundColor(Color.GRAY);
+            popList.setNormalTextColor(Color.WHITE);
+            popList.setDividerColor(Color.GRAY);
+            List<String> list = new ArrayList<>();
+            list.add("下一级");
+            list.add("编辑");
+            popList.bind(textView, list, new PopList.PopupListListener() {
+                @Override
+                public boolean showPopupList(View adapterView, View contextView, int contextPosition) {
+                    return true;
+                }
 
-            }
-        });
+                @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
+                @Override
+                public void onPopupListClick(View contextView, int contextPosition, int position) {
+                    switch (position) {
+                        //下一级节点
+                        case 0: {
+                            int viewid = contextView.getId();
+                            Node node = ViewIds.getNodefromViewId(viewid);
+                            int no = node.no;
+                            Node newnode = new Node(node.id);
+                            TreeUtil.map_IDtoClass.put(newnode.id, newnode);
+                            if (node.children.size() != 0) {
+                                node.addChild(newnode, node.children.size() - 1);
+                            } else node.children.add(newnode);
+                            reDraw(node);
+                            break;
+                        }
+                        case 1: {
+                            coolMenuFrameLayout = getActivity().findViewById(R.id.rl_main);
+                            coolMenuFrameLayout.toggle();
+                            int viewid = contextView.getId();
+                            TreeUtil.currentNode = ViewIds.getNodefromViewId(viewid);
+                        }
+
+                    }
+
+                }
+            });
+        }
 
 //        设置节点的点击事件
         textView.setOnClickListener(new View.OnClickListener() {
@@ -337,7 +409,7 @@ public class MindFragment extends Fragment {
             TreeUtil.computeBP(parentnode);
             parentnode = TreeUtil.map_IDtoClass.get(parentnode.parent);
         }
-        TreeUtil.computeXY(parentnode);
+        TreeUtil.computeXY(TreeUtil.mindTree);
         //销毁掉所有的线
         DrawGeometryView line = null;
         for (int id :
@@ -353,13 +425,6 @@ public class MindFragment extends Fragment {
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
-        MbFile.writeTreeFile(JsonUtil.nodetoJson(TreeUtil.mindTree));
-        Log.d("test","destroy");
-    }
-
-    @Override
     public void onPause() {
         super.onPause();
         MbFile.writeTreeFile(JsonUtil.nodetoJson(TreeUtil.mindTree));
@@ -371,6 +436,22 @@ public class MindFragment extends Fragment {
         super.onStop();
         MbFile.writeTreeFile(JsonUtil.nodetoJson(TreeUtil.mindTree));
         Log.d("test","stop");
+    }
+
+    public void deletechildren(Node root){
+        for (Node child:
+            root.children ) {
+            if (child.hasChildren()){
+                deletechildren(child);
+            }else {
+                insertLayout.removeView(getView().findViewById(ViewIds.map_NodetoViewID.get(child)));
+                ViewIds.map_NodetoViewID.remove(child);
+                TreeUtil.map_IDtoClass.remove(child.id);
+            }
+        }
+        insertLayout.removeView(getView().findViewById(ViewIds.map_NodetoViewID.get(root)));
+        ViewIds.map_NodetoViewID.remove(root);
+        TreeUtil.map_IDtoClass.remove(root.id);
     }
 }
 

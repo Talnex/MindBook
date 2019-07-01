@@ -19,5 +19,9 @@
 
     </style>
 
-
+    <!--popupWindow进入退出动画-->
+    <style name="popuStyle">
+        <item name="android:windowEnterAnimation">@anim/popup_anim_in</item>
+        <item name="android:windowExitAnimation">@anim/popup_anim_out</item>
+    </style>
 </resources>

@@ -1,4 +1,4 @@
-package com.talnex.wrongsbook.MindMap;
+package com.talnex.wrongsbook.Components;
 
 import android.content.Context;
 import android.graphics.Rect;
@@ -31,7 +31,7 @@ public class HVScrollView extends FrameLayout {
 
     static final float MAX_SCROLL_FACTOR = 0.5f;
 
-    private float scale = 1; // 伸缩比例
+    public static float scale = 1; // 伸缩比例
     private int moveType; // 0=未选择 2=缩放
     private float spacing;
 
@@ -40,7 +40,7 @@ public class HVScrollView extends FrameLayout {
     private final Rect mTempRect = new Rect();
     private Scroller mScroller;
 
-    private float offset = 1;
+    public static float offset = 1;
 
     /**
      * Flag to indicate that we are moving focus ourselves. This is so the

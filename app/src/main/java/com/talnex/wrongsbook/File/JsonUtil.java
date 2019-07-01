@@ -8,7 +8,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.talnex.wrongsbook.Beans.Node;
 import com.talnex.wrongsbook.Beans.TreeParm;
-import com.talnex.wrongsbook.MindMap.TreeUtil;
+import com.talnex.wrongsbook.Utils.TreeUtil;
 
 import java.util.ArrayList;
 import java.util.Collection;

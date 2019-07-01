@@ -1,4 +1,4 @@
-package com.talnex.wrongsbook.MindMap;
+package com.talnex.wrongsbook.Components;
 
 import android.content.Context;
 import android.util.AttributeSet;

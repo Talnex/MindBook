@@ -4,13 +4,16 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.DownloadListener;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Toast;
 
+import com.talnex.wrongsbook.Net.Userinfo;
 import com.talnex.wrongsbook.R;
 
 public class ComunityFragment extends Fragment {
@@ -28,7 +31,7 @@ public class ComunityFragment extends Fragment {
 
 
         webView = view.findViewById(R.id.webview);
-        webView.loadUrl("https://www.baidu.com");
+        webView.loadUrl("http://129.28.168.201:8888");
 
         webView.setWebViewClient(new WebViewClient(){
             @Override
@@ -58,7 +61,8 @@ public class ComunityFragment extends Fragment {
         @Override
         public void onDownloadStart(String url, String userAgent,
                                     String contentDisposition, String mimetype, long contentLength) {
-            System.out.println("url ==== >" + url);
+            Userinfo.chooseurl = url;
+            Toast.makeText(getActivity(),"已复制，快去添加到节点上吧",Toast.LENGTH_LONG).show();
         }
 
     }

@@ -14,12 +14,12 @@ import android.view.WindowManager;
 import android.widget.RelativeLayout;
 
 import com.dxtt.coolmenu.CoolMenuFrameLayout;
-import com.talnex.wrongsbook.Fragments.Fragment1;
 import com.talnex.wrongsbook.Fragments.ComunityFragment;
-import com.talnex.wrongsbook.Fragments.Fragment3;
+import com.talnex.wrongsbook.Fragments.Wrongbookfragment;
 import com.talnex.wrongsbook.Fragments.MindFragment;
-import com.talnex.wrongsbook.MindMap.DrawGeometryView;
-import com.talnex.wrongsbook.MindMap.HVScrollView;
+import com.talnex.wrongsbook.Fragments.UserFragment;
+import com.talnex.wrongsbook.Components.DrawGeometryView;
+import com.talnex.wrongsbook.Components.HVScrollView;
 import com.talnex.wrongsbook.R;
 import com.talnex.wrongsbook.Utils.ColorUtils;
 import com.talnex.wrongsbook.Utils.DisplayUtil;
@@ -65,9 +65,9 @@ public class MindTreeEngine extends AppCompatActivity {
         coolMenuFrameLayout.setTitles(titleList);
         coolMenuFrameLayout.setScrollBarSize(20);
 
-        fragments.add(new Fragment1());
+        fragments.add(new UserFragment());
         fragments.add(new ComunityFragment());
-        fragments.add(new Fragment3());
+        fragments.add(new Wrongbookfragment());
         fragments.add(new MindFragment());
 
         FragmentPagerAdapter adapter = new FragmentPagerAdapter(getSupportFragmentManager()) {

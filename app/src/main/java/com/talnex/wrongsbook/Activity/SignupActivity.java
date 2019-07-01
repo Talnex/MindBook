@@ -14,6 +14,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.talnex.wrongsbook.Net.Userinfo;
 import com.talnex.wrongsbook.R;
 
 import java.io.BufferedReader;
@@ -41,6 +42,7 @@ public class SignupActivity extends AppCompatActivity {
     Button _signupButton;
     @BindView(R.id.link_login)
     TextView _loginLink;
+    private String res = "";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -71,8 +73,6 @@ public class SignupActivity extends AppCompatActivity {
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     public void signup() {
-        Log.d(TAG, "Signup");
-
         if (!validate()) {
             onSignupFailed("格式错误");
             return;
@@ -86,45 +86,55 @@ public class SignupActivity extends AppCompatActivity {
         progressDialog.setMessage("创建账户……");
         progressDialog.show();
 
-        String name = _nameText.getText().toString();
-        String email = _emailText.getText().toString();
-        String password = _passwordText.getText().toString();
+        final String name = _nameText.getText().toString();
+        final String email = _emailText.getText().toString();
+        final String password = _passwordText.getText().toString();
         String reEnterPassword = _reEnterPasswordText.getText().toString();
 
-        try {
-            String path = "http://129.28.168.201:8888/signup?email="
-                    + email + "&password=" + password + "&name=" + name;
-            URL url = new URL(path);
-            HttpURLConnection conn = (HttpURLConnection) url
-                    .openConnection();
-            conn.setRequestMethod("POST");
-            conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-            String data = "email=" + email + "&password=" + password + "&name=" + name;
-            conn.setConnectTimeout(5000);
-            conn.setReadTimeout(5000);
-            conn.setDoOutput(true); // 设置要向服务器写数据
-            conn.getOutputStream().write(data.getBytes(StandardCharsets.UTF_8));
+        new Thread(){
+            @Override
+            public void run() {
+                try {
+                    String path = "http://129.28.168.201:8888/signup?email="
+                            + email + "&password=" + password + "&name=" + name;
+                    URL url = new URL(path);
+                    HttpURLConnection conn = (HttpURLConnection) url
+                            .openConnection();
+                    conn.setRequestMethod("POST");
+                    conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+                    String data = "email=" + email + "&password=" + password + "&name=" + name;
+                    conn.setConnectTimeout(5000);
+                    conn.setReadTimeout(5000);
+                    conn.setDoOutput(true); // 设置要向服务器写数据
+                    conn.getOutputStream().write(data.getBytes(StandardCharsets.UTF_8));
 
-            int code = conn.getResponseCode(); // 服务器的响应码 200 OK //404 页面找不到
-            if (code == 200) {
-                InputStream is = conn.getInputStream();
-                BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-                StringBuilder sb = new StringBuilder();
-                String line = null;
-                while ((line = reader.readLine()) != null) {
-                    sb.append(line);
+                    int code = conn.getResponseCode(); // 服务器的响应码 200 OK //404 页面找不到
+                    if (code == 200) {
+                        InputStream is = conn.getInputStream();
+                        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+                        StringBuilder sb = new StringBuilder();
+                        String line = null;
+                        while ((line = reader.readLine()) != null) {
+                            sb.append(line);
+                        }
+                        //获取响应文本
+                        String responseText = sb.toString();
+                        is.close();
+                        switch (responseText){
+                            case "success":
+                                onSignupSuccess(email);
+                                break;
+                            default: res = responseText;
+                        }
+                    } else {
+                        res = "error:"+code;
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-                //获取响应文本
-                String responseText = sb.toString();
-                is.close();
-                onSignupSuccess(responseText);
-            } else {
-                onSignupFailed("error:" + code);
             }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        }.start();
 
         new android.os.Handler().postDelayed(
                 new Runnable() {
@@ -132,18 +142,21 @@ public class SignupActivity extends AppCompatActivity {
                         progressDialog.dismiss();
                     }
                 }, 3000);
+
+        while (res.equals(""));
+        onSignupFailed(res);
     }
 
 
-    public void onSignupSuccess(String info) {
-        _signupButton.setEnabled(true);
-        setResult(RESULT_OK, null);
-        finish();
+    public void onSignupSuccess(String email) {
+        Intent intent = new Intent(SignupActivity.this,MindTreeEngine.class);
+        Userinfo.useremail = email;
+        startActivity(intent);
+        this.finish();
     }
 
     public void onSignupFailed(String info) {
-        Toast.makeText(getBaseContext(), "Login failed", Toast.LENGTH_LONG).show();
-
+        Toast.makeText(this,res,Toast.LENGTH_LONG).show();
         _signupButton.setEnabled(true);
     }
 

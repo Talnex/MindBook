@@ -16,6 +16,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.talnex.wrongsbook.Net.Userinfo;
 import com.talnex.wrongsbook.R;
 
 import java.io.BufferedReader;
@@ -32,6 +33,7 @@ import butterknife.ButterKnife;
 public class LoginActivity extends AppCompatActivity {
     private static final String TAG = "LoginActivity";
     private static final int REQUEST_SIGNUP = 0;
+    private static String res = "";
 
     @BindView(R.id.input_email)
     EditText _emailText;
@@ -48,11 +50,13 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
 
-        ActivityCompat.requestPermissions(this, new String[]{ Manifest.permission.WRITE_EXTERNAL_STORAGE,
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,
                 Manifest.permission.READ_EXTERNAL_STORAGE}, 0);
 
+        //全屏
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
+        //登录按钮
         _loginButton.setOnClickListener(new View.OnClickListener() {
 
             @RequiresApi(api = Build.VERSION_CODES.KITKAT)
@@ -62,16 +66,18 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
+        //注册按钮
         _signupLink.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), SignupActivity.class);
-                startActivityForResult(intent, REQUEST_SIGNUP);
+                startActivity(intent);
                 finish();
                 overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
             }
         });
+
     }
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
@@ -79,10 +85,9 @@ public class LoginActivity extends AppCompatActivity {
         Log.d(TAG, "Login");
 
         if (!validate()) {
-            onLoginFailed("账户或密码错误");
+            onLoginFailed("账户或密码格式错误");
             return;
         }
-
         _loginButton.setEnabled(false);
 
         final ProgressDialog progressDialog = new ProgressDialog(LoginActivity.this,
@@ -96,61 +101,66 @@ public class LoginActivity extends AppCompatActivity {
 
 
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.INTERNET
-        , Manifest.permission.ACCESS_NETWORK_STATE, Manifest.permission.ACCESS_WIFI_STATE},1);
+                , Manifest.permission.ACCESS_NETWORK_STATE, Manifest.permission.ACCESS_WIFI_STATE}, 1);
         //服务器验证账户密码
-        try {
-            String path = "http://129.28.168.201:8888/login?email="
-                    + email + "&password=" + password;
-            URL url = new URL(path);
-            HttpURLConnection conn = (HttpURLConnection) url
-                    .openConnection();
-            conn.setRequestMethod("POST");
-            conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-            String data = "email=" + email + "&password=" + password;
-            conn.setConnectTimeout(5000);
-            conn.setReadTimeout(5000);
-            conn.setDoOutput(true); // 设置要向服务器写数据
-            conn.getOutputStream().write(data.getBytes(StandardCharsets.UTF_8));
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    String path = "http://129.28.168.201:8888/login?email="
+                            + email + "&password=" + password;
+                    URL url = new URL(path);
+                    HttpURLConnection conn = (HttpURLConnection) url
+                            .openConnection();
+                    conn.setRequestMethod("POST");
+                    conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+                    String data = "email=" + email + "&password=" + password;
+                    conn.setConnectTimeout(5000);
+                    conn.setReadTimeout(5000);
+                    conn.setDoOutput(true); // 设置要向服务器写数据
+                    conn.getOutputStream().write(data.getBytes(StandardCharsets.UTF_8));
 
-            int code = conn.getResponseCode(); // 服务器的响应码 200 OK //404 页面找不到
-            if (code == 200) {
-                InputStream is = conn.getInputStream();
-                BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-                StringBuilder sb = new StringBuilder();
-                String line = null;
-                while ((line = reader.readLine()) != null) {
-                    sb.append(line);
+                    int code = conn.getResponseCode(); // 服务器的响应码 200 OK //404 页面找不到
+                    if (code == 200) {
+                        InputStream is = conn.getInputStream();
+                        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+                        StringBuilder sb = new StringBuilder();
+                        String line = null;
+                        while ((line = reader.readLine()) != null) {
+                            sb.append(line);
+                        }
+                        //获取响应文本
+                        String responseText = sb.toString();
+                        is.close();
+                        switch (responseText) {
+                            case "success":
+                                res = responseText;
+                                onLoginSuccess(email);
+                                break;
+                            default:
+                                res = "用户名或密码错误";
+                                break;
+                        }
+
+                    } else {
+                        res = "error"+code;
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-                //获取响应文本
-                String responseText = sb.toString();
-                is.close();
-                onLoginSuccess(responseText);
-            } else {
-                onLoginFailed("error:" + code);
             }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        }.start();
 
         new android.os.Handler().postDelayed(
                 new Runnable() {
                     public void run() {
                         progressDialog.dismiss();
                     }
-                }, 3000);
-    }
+                }, 1000);
 
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_SIGNUP) {
-            if (resultCode == RESULT_OK) {
-//                Intent intent = new Intent(LoginActivity.this,MindTreeEngine.class);
-//                startActivity(intent);
-                this.finish();
-            }
-        }
+        while (res.equals("")) ;
+        onLoginFailed(res);
     }
 
     @Override
@@ -159,16 +169,16 @@ public class LoginActivity extends AppCompatActivity {
         moveTaskToBack(true);
     }
 
-    public void onLoginSuccess(String info) {
-        Log.d("net", info);
-        _loginButton.setEnabled(true);
-        Toast.makeText(getBaseContext(), info, Toast.LENGTH_LONG).show();
+    public void onLoginSuccess(String email) {
+        Userinfo.useremail = email;
+        Userinfo.username = email;
         finish();
+        Intent intent = new Intent(LoginActivity.this,MindTreeEngine.class);
+        startActivity(intent);
     }
 
     public void onLoginFailed(String info) {
-        Log.d("net", info);
-        Toast.makeText(getBaseContext(), info, Toast.LENGTH_LONG).show();
+        Toast.makeText(this, info, Toast.LENGTH_LONG).show();
         _loginButton.setEnabled(true);
     }
 

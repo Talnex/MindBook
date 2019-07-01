@@ -1,7 +1,7 @@
 /**
  *
  */
-package com.talnex.wrongsbook.MindMap;
+package com.talnex.wrongsbook.Components;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
