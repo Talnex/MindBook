@@ -14,7 +14,7 @@ public class TreeUtil {
     public static Node currentNode;
 
     public static int GAP = 55;
-    public static int CENG_CAP = 160;
+    public static int CENG_CAP = 150;
 
     public static int treeHeight;
     public static Stack<Node> stack = new Stack<>();

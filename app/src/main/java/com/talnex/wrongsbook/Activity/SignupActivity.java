@@ -91,6 +91,13 @@ public class SignupActivity extends AppCompatActivity {
         final String password = _passwordText.getText().toString();
         String reEnterPassword = _reEnterPasswordText.getText().toString();
 
+        new android.os.Handler().postDelayed(
+                new Runnable() {
+                    public void run() {
+                        progressDialog.dismiss();
+                    }
+                }, 3000);
+
         new Thread(){
             @Override
             public void run() {
@@ -122,6 +129,7 @@ public class SignupActivity extends AppCompatActivity {
                         is.close();
                         switch (responseText){
                             case "success":
+                                res = responseText;
                                 onSignupSuccess(email);
                                 break;
                             default: res = responseText;
@@ -136,14 +144,8 @@ public class SignupActivity extends AppCompatActivity {
             }
         }.start();
 
-        new android.os.Handler().postDelayed(
-                new Runnable() {
-                    public void run() {
-                        progressDialog.dismiss();
-                    }
-                }, 3000);
-
         while (res.equals(""));
+        Log.d("test",res);
         onSignupFailed(res);
     }
 

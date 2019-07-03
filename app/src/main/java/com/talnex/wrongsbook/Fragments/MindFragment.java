@@ -8,7 +8,6 @@ import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,6 +21,7 @@ import android.widget.RelativeLayout;
 
 import com.dxtt.coolmenu.CoolMenuFrameLayout;
 import com.talnex.wrongsbook.Beans.Node;
+import com.talnex.wrongsbook.Components.EditNodeMyDialog;
 import com.talnex.wrongsbook.Components.PopList;
 import com.talnex.wrongsbook.Components.myTextView;
 import com.talnex.wrongsbook.File.JsonUtil;
@@ -33,7 +33,6 @@ import com.talnex.wrongsbook.R;
 import com.talnex.wrongsbook.Utils.ColorUtils;
 import com.talnex.wrongsbook.Utils.ViewIds;
 import com.talnex.wrongsbook.Utils.WigetController;
-import com.talnex.wrongsbook.Utils.sample;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -77,9 +76,9 @@ public class MindFragment extends Fragment {
         insertLayout = view.findViewById(R.id.layout_zone);
 
 
-        if (MbFile.hasfile()){
+        if (MbFile.hasfile()) {
             node = JsonUtil.jsontoNode(MbFile.readTreeFile());
-        }else {
+        } else {
             node = new Node(null);
             node.setId("root");
         }
@@ -94,9 +93,6 @@ public class MindFragment extends Fragment {
         TreeUtil.computeOffSet();
         TreeUtil.computeXY(node);
         MbFile.writeTreeFile(JsonUtil.nodetoJson(node));
-
-        //String json = JSON.toJSONString(node);
-        //JsonUtil.e("json", json);
 
         popMenuItemList.add("同级");
         popMenuItemList.add("下一级");
@@ -117,8 +113,8 @@ public class MindFragment extends Fragment {
                 insertLayout.setScaleY(1);
                 HVScrollView.scale = 1;
                 HVScrollView.offset = 1;
-                hv.smoothScrollTo((int) (myTextView.getX() - SCREEN_WIDTH  / 2) + myTextView.getWidth() / 2
-                       , (int) (myTextView.getY() - SCREEN_HEIGHT  / 2) + myTextView.getHeight() / 2);
+                hv.smoothScrollTo((int) (myTextView.getX() - SCREEN_WIDTH / 2) + myTextView.getWidth() / 2
+                        , (int) (myTextView.getY() - SCREEN_HEIGHT / 2) + myTextView.getHeight() / 2);
             }
         });
         return view;
@@ -144,6 +140,7 @@ public class MindFragment extends Fragment {
                 child.treeParm.setCenter_x(child.treeParm.leftpoint_x + child.treeParm.width / 2);
                 child.treeParm.setCenter_y(child.treeParm.leftpoint_y);
                 modifyXY(child);
+
             } else drawNode(child);
 
 
@@ -226,15 +223,15 @@ public class MindFragment extends Fragment {
      * @param node
      * @return
      */
-    private void drawNode(Node node) {
+    private void drawNode(final Node node) {
 
         //增加的节点
         final myTextView textView = new myTextView(getActivity(), null);
         textView.setTextColor(Color.BLACK);
         textView.setTextSize(5);
-        if (node.info!=null){
-            textView.setText(node.info);
-        }else textView.setText("编辑");
+        if (node.info == null || node.info.equals("")) {
+            textView.setText("编辑");
+        } else textView.setText(node.info);
         textView.setMaxLines(2);
         textView.setEllipsize(TextUtils.TruncateAt.END);
         textView.setMaxEms(10);
@@ -252,7 +249,6 @@ public class MindFragment extends Fragment {
         textView.setBackground(null);
         textView.setFocusable(false);
         if (node.type == 1) {
-            //TODO
             textView.setBackgroundColor(ColorUtils.rankColor.get(node.rank));
             textView.setTextColor(Color.BLACK);
         }
@@ -310,17 +306,17 @@ public class MindFragment extends Fragment {
                         }
                         //编辑
                         case 3: {
-                            coolMenuFrameLayout = getActivity().findViewById(R.id.rl_main);
-                            coolMenuFrameLayout.toggle();
-                            int viewid = contextView.getId();
-                            TreeUtil.currentNode = ViewIds.getNodefromViewId(viewid);
+                            EditNodeMyDialog editNodeMyDialog = new EditNodeMyDialog(getActivity(), contextView, MindFragment.this);
+                            editNodeMyDialog.show();
+
+
                         }
 
                     }
 
                 }
             });
-        }else {
+        } else {
             PopList popList = new PopList(getActivity());
             popList.setNormalBackgroundColor(Color.GRAY);
             popList.setNormalTextColor(Color.WHITE);
@@ -352,10 +348,8 @@ public class MindFragment extends Fragment {
                             break;
                         }
                         case 1: {
-                            coolMenuFrameLayout = getActivity().findViewById(R.id.rl_main);
-                            coolMenuFrameLayout.toggle();
-                            int viewid = contextView.getId();
-                            TreeUtil.currentNode = ViewIds.getNodefromViewId(viewid);
+                            final EditNodeMyDialog editNodeMyDialog = new EditNodeMyDialog(getActivity(), contextView, MindFragment.this);
+                            editNodeMyDialog.show();
                         }
 
                     }
@@ -368,13 +362,14 @@ public class MindFragment extends Fragment {
         textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                hv.smoothScrollTo((int) (view.getX() - SCREEN_WIDTH  / 2) + view.getWidth() / 2
-                        , (int) (view.getY() - SCREEN_HEIGHT  / 2) + view.getHeight() / 2);
+                hv.smoothScrollTo((int) (view.getX() - SCREEN_WIDTH / 2) + view.getWidth() / 2
+                        , (int) (view.getY() - SCREEN_HEIGHT / 2) + view.getHeight() / 2);
+                int viewid = view.getId();
+                TreeUtil.currentNode = ViewIds.getNodefromViewId(viewid);
 //                Log.d("left", (int) (view.getX() - SCREEN_WIDTH / 2) + view.getWidth() / 2 + "");
 
             }
         });
-
 
         //出现的动画
         ScaleAnimation animation = new ScaleAnimation(0.0f, 1.0f, 0.0f, 1.0f, Animation.RELATIVE_TO_SELF, 0.5f,
@@ -404,7 +399,7 @@ public class MindFragment extends Fragment {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
-    private void reDraw(Node parentnode) {
+    public void reDraw(Node parentnode) {
         while (parentnode.parent != null) {
             TreeUtil.computeBP(parentnode);
             parentnode = TreeUtil.map_IDtoClass.get(parentnode.parent);
@@ -436,12 +431,12 @@ public class MindFragment extends Fragment {
         MbFile.writeTreeFile(JsonUtil.nodetoJson(TreeUtil.mindTree));
     }
 
-    public void deletechildren(Node root){
-        for (Node child:
-            root.children ) {
-            if (child.hasChildren()){
+    public void deletechildren(Node root) {
+        for (Node child :
+                root.children) {
+            if (child.hasChildren()) {
                 deletechildren(child);
-            }else {
+            } else {
                 insertLayout.removeView(getView().findViewById(ViewIds.map_NodetoViewID.get(child)));
                 ViewIds.map_NodetoViewID.remove(child);
                 TreeUtil.map_IDtoClass.remove(child.id);

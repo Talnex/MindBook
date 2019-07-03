@@ -5,10 +5,7 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.RelativeLayout;
 
-/**
- * 正方形的RelativeLayout
- * Created by 刘楠 on 2016/8/13 0013.16:07
- */
+
 public class SquareRelativeLayout extends RelativeLayout {
     public SquareRelativeLayout(Context context) {
         super(context);
@@ -28,7 +25,6 @@ public class SquareRelativeLayout extends RelativeLayout {
 
         //设置自己测量结果
         setMeasuredDimension(getDefaultSize(0,widthMeasureSpec),getDefaultSize(0,heightMeasureSpec));
-
 
         /**
          * 测量子View的

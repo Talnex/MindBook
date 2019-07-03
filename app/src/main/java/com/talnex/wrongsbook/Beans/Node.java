@@ -9,11 +9,11 @@ import java.util.List;
 public class Node {
     public String id;
     public int type;
-    public String info;
+    public String info = "";
     public String description;
     public String url = "";
     public List<Node> children = new ArrayList<>();
-    public int rank;
+    public int rank = 1;
     public int no;
     public TreeParm treeParm = new TreeParm();
     public List<String> keywords = null;
