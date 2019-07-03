@@ -104,6 +104,7 @@ public class Wrongbookfragment extends Fragment {
                 final OkHttpClient client = new OkHttpClient();
                 final String finalPhoto = photo;
                 final String finalTitle = title;
+                Toast.makeText(getActivity(), "正在上传", Toast.LENGTH_LONG).show();
                 new Thread() {
                     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
                     @Override
@@ -113,8 +114,8 @@ public class Wrongbookfragment extends Fragment {
                                 .addFormDataPart("img", UUID.getUUID(),
                                         RequestBody.create(MediaType.parse("image/png"), new File(mDatas.get(Integer.parseInt(finalPhoto)))))
                                 .addFormDataPart("title", finalTitle)
-                                .addFormDataPart("author",Userinfo.username)
-                                .addFormDataPart("text",text.toString())
+                                .addFormDataPart("author", Userinfo.username)
+                                .addFormDataPart("text", text.toString())
                                 .build();
 
                         Request request = new Request.Builder()
@@ -134,6 +135,9 @@ public class Wrongbookfragment extends Fragment {
                     }
                 }.start();
 
+                while (resposetext.equals("")) ;
+                Toast.makeText(getActivity(), "上传成功", Toast.LENGTH_SHORT).show();
+                resposetext = "";
 
             }
         });
@@ -158,6 +162,7 @@ public class Wrongbookfragment extends Fragment {
                                     while (resposetext.equals("")) ;
                                     Toast.makeText(getActivity(), "上传成功", Toast.LENGTH_SHORT).show();
                                     fileUrl.put(mDatas.get(position), JSON.parseObject(resposetext).getString("url"));
+                                    resposetext = "";
                                 } catch (IOException e) {
                                     e.printStackTrace();
                                 }

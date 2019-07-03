@@ -28,6 +28,7 @@ import com.talnex.wrongsbook.File.JsonUtil;
 import com.talnex.wrongsbook.File.MbFile;
 import com.talnex.wrongsbook.Components.DrawGeometryView;
 import com.talnex.wrongsbook.Components.HVScrollView;
+import com.talnex.wrongsbook.Net.Userinfo;
 import com.talnex.wrongsbook.Utils.TreeUtil;
 import com.talnex.wrongsbook.R;
 import com.talnex.wrongsbook.Utils.ColorUtils;
@@ -117,6 +118,7 @@ public class MindFragment extends Fragment {
                         , (int) (myTextView.getY() - SCREEN_HEIGHT / 2) + myTextView.getHeight() / 2);
             }
         });
+
         return view;
     }
 
@@ -134,7 +136,6 @@ public class MindFragment extends Fragment {
                 node.children) {
             //如果已经绘制了
             if (ViewIds.map_NodetoViewID.containsKey(child)) {
-                myTextView myTextView = getView().findViewById(ViewIds.map_NodetoViewID.get(child));
                 child.treeParm.setRightpoint_x(child.treeParm.leftpoint_x + child.treeParm.width);
                 child.treeParm.setRightpoint_y(child.treeParm.leftpoint_y);
                 child.treeParm.setCenter_x(child.treeParm.leftpoint_x + child.treeParm.width / 2);
@@ -276,7 +277,7 @@ public class MindFragment extends Fragment {
                             node = TreeUtil.map_IDtoClass.get(node.parent);
                             Node newnode = new Node(node.id);
                             TreeUtil.map_IDtoClass.put(newnode.id, newnode);
-                            node.addChild(newnode, no + 1);
+                            node.addChild(newnode, no/2);
                             reDraw(node);
                             break;
                         }
@@ -366,7 +367,10 @@ public class MindFragment extends Fragment {
                         , (int) (view.getY() - SCREEN_HEIGHT / 2) + view.getHeight() / 2);
                 int viewid = view.getId();
                 TreeUtil.currentNode = ViewIds.getNodefromViewId(viewid);
-//                Log.d("left", (int) (view.getX() - SCREEN_WIDTH / 2) + view.getWidth() / 2 + "");
+                Userinfo.currenturl = TreeUtil.currentNode.url;
+                if (!Userinfo.currenturl.equals("")) {
+                    ComunityFragment.webView.loadUrl(Userinfo.currenturl);
+                }
 
             }
         });
@@ -405,6 +409,7 @@ public class MindFragment extends Fragment {
             parentnode = TreeUtil.map_IDtoClass.get(parentnode.parent);
         }
         TreeUtil.computeXY(TreeUtil.mindTree);
+        TreeUtil.adjustX(TreeUtil.mindTree,0);
         //销毁掉所有的线
         DrawGeometryView line = null;
         for (int id :
@@ -418,6 +423,32 @@ public class MindFragment extends Fragment {
 
         drawTree(parentnode);
     }
+
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
+    public void reDrawAll(Node node){
+        //销毁掉所有的线
+        DrawGeometryView line = null;
+        for (int id :
+                ViewIds.list_Lines) {
+            line = getView().findViewById(id);
+            line.clearAnimation();
+            line.setVisibility(View.GONE);
+            insertLayout.removeView(line);
+        }
+        //销毁掉所有节点
+        myTextView myTextView;
+        for (int id :
+                ViewIds.map_NodetoViewID.values()) {
+            myTextView = getView().findViewById(id);
+            myTextView.clearAnimation();
+            myTextView.setVisibility(View.GONE);
+            insertLayout.removeView(myTextView);
+        }
+        TreeUtil.computeOffSet();
+        TreeUtil.computeXY(TreeUtil.mindTree);
+        drawTree(TreeUtil.mindTree);
+    }
+
 
     @Override
     public void onPause() {

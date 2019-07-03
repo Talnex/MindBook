@@ -1,9 +1,7 @@
 package com.talnex.wrongsbook.Adapter;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,9 +39,7 @@ public class PhotoWallAdapter extends RecyclerView.Adapter<PhotoWallAdapter.MyVi
 
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-
         View itemView = mInflater.inflate(R.layout.item_recycler, parent, false);
-
         return new MyViewHolder(itemView);
     }
 

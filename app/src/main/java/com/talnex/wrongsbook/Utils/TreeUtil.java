@@ -37,7 +37,7 @@ public class TreeUtil {
                 Node child = children.get(i);
                 if (!child.url.equals("")) child.type = 1;
                 child.no = i;
-                child.rank = i;
+            //    child.rank = i;
                 loadAllNode(child);
             }
         }
@@ -101,7 +101,7 @@ public class TreeUtil {
         }
 
         re_compute(node);
-        treeHeight = getDownOffSet(node)+getUpOffSet(node);
+        treeHeight = getDownOffSet(node) + getUpOffSet(node);
     }
 
     /**
@@ -284,5 +284,48 @@ public class TreeUtil {
             } else return null;
         }
         return null;
+    }
+
+    /**
+     * 根据绘制的view重新调整x坐标
+     *
+     * @param node
+     * @param lastadd
+     */
+    public static void adjustX(Node node, int lastadd) {
+        if (node.treeParm.width > 100) {
+            int add = node.treeParm.width - 100 + lastadd;
+            if (node.hasChildren()) {
+                for (Node child :
+                        node.children) {
+                    if (child.hasChildren()) {
+                        child.treeParm.leftpoint_x += add;
+                        child.treeParm.rightpoint_x += add;
+                        child.treeParm.center_x += add;
+                        adjustX(child, add);
+                    } else {
+                        child.treeParm.leftpoint_x += add;
+                        child.treeParm.rightpoint_x += add;
+                        child.treeParm.center_x += add;
+                    }
+                }
+            }
+        } else {
+            if (node.hasChildren()) {
+                for (Node child :
+                        node.children) {
+                    if (child.hasChildren()) {
+                        child.treeParm.leftpoint_x += lastadd;
+                        child.treeParm.rightpoint_x += lastadd;
+                        child.treeParm.center_x += lastadd;
+                        adjustX(child, lastadd);
+                    } else {
+                        child.treeParm.leftpoint_x += lastadd;
+                        child.treeParm.rightpoint_x += lastadd;
+                        child.treeParm.center_x += lastadd;
+                    }
+                }
+            }
+        }
     }
 }

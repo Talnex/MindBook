@@ -7,19 +7,22 @@ import android.graphics.Color;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 
 import com.talnex.wrongsbook.Beans.Node;
 import com.talnex.wrongsbook.Fragments.MindFragment;
+import com.talnex.wrongsbook.Net.Userinfo;
 import com.talnex.wrongsbook.R;
 import com.talnex.wrongsbook.Utils.ColorUtils;
 import com.talnex.wrongsbook.Utils.TreeUtil;
 import com.talnex.wrongsbook.Utils.ViewIds;
+import com.talnex.wrongsbook.Utils.WigetController;
 
 public class EditNodeMyDialog extends Dialog {
     private EditText et_name;
     private EditText et_rank;
-    private EditText et_url;
+    private Button btn_url;
     private String nodeid;
     private Node nodecopy;
     private myTextView contentview;
@@ -32,7 +35,7 @@ public class EditNodeMyDialog extends Dialog {
         nodecopy = ViewIds.map_ViewIdtoNodeId.get(contentview.getId());
         et_name = findViewById(R.id.et_name);
         et_rank = findViewById(R.id.et_rank);
-        et_url = findViewById(R.id.et_url);
+        btn_url = findViewById(R.id.btn_url);
         this.contentview = (myTextView) contentview;
         this.mindFragment = mindFragment;
 
@@ -43,7 +46,18 @@ public class EditNodeMyDialog extends Dialog {
         super.show();
         et_name.setText(nodecopy.info);
         et_rank.setText(nodecopy.rank + "");
-        et_url.setText(nodecopy.url);
+        if (!nodecopy.url.equals("") || nodecopy.url != null) {
+            btn_url.setText(nodecopy.url + "");
+        } else btn_url.setText("未添加");
+        btn_url.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (!Userinfo.chooseurl.equals("")) {
+                    btn_url.setText(Userinfo.chooseurl + "");
+                    TreeUtil.map_IDtoClass.get(nodeid).url = Userinfo.chooseurl;
+                }
+            }
+        });
     }
 
     @Override
@@ -57,7 +71,6 @@ public class EditNodeMyDialog extends Dialog {
     protected void onStop() {
         super.onStop();
         TreeUtil.map_IDtoClass.get(nodeid).info = et_name.getText().toString();
-        TreeUtil.map_IDtoClass.get(nodeid).url = et_url.getText().toString();
         TreeUtil.map_IDtoClass.get(nodeid).rank = Integer.parseInt(et_rank.getText().toString());
         if (TreeUtil.map_IDtoClass.get(nodeid).url.equals("")) {
             TreeUtil.map_IDtoClass.get(nodeid).type = 0;
@@ -70,6 +83,9 @@ public class EditNodeMyDialog extends Dialog {
             contentview.setBackgroundColor(ColorUtils.rankColor.get(nodecopy.rank));
             contentview.setTextColor(Color.BLACK);
         }
+        TreeUtil.map_IDtoClass.get(nodeid).treeParm.width = WigetController.getWidth(contentview);
+        TreeUtil.map_IDtoClass.get(nodeid).treeParm.hight = WigetController.getHeight(contentview);
+
         mindFragment.reDraw(TreeUtil.mindTree);
     }
 }

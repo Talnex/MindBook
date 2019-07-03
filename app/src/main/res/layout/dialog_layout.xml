@@ -42,19 +42,13 @@
         android:layout_height="wrap_content"
         />
 
-    <EditText
-        android:layout_weight="1"
-        android:hint="链接"
-        android:background="@null"
-        android:id="@+id/et_url"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:maxEms="1"
-        android:maxLines="1"
-        android:ellipsize="end"
-        />
+   <Button
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:layout_weight="1"
+       android:id="@+id/btn_url"
+       android:textColor="#000000"
+       />
 
 
 </LinearLayout>

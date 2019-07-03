@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.DownloadListener;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
@@ -17,7 +18,7 @@ import com.talnex.wrongsbook.Net.Userinfo;
 import com.talnex.wrongsbook.R;
 
 public class ComunityFragment extends Fragment {
-    WebView webView;
+    public static WebView webView;
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -31,6 +32,12 @@ public class ComunityFragment extends Fragment {
 
 
         webView = view.findViewById(R.id.webview);
+
+//        WebSettings webSettings = webView.getSettings();
+//        webSettings.setBuiltInZoomControls(false); // 显示放大缩小 controler
+//        webSettings.setSupportZoom(true); // 可以缩放
+//        webSettings.setDefaultZoom(WebSettings.ZoomDensity.CLOSE);// 默认缩放模式
+//        webSettings.setUseWideViewPort(true);
         webView.loadUrl("http://129.28.168.201:8888");
 
         webView.setWebViewClient(new WebViewClient(){
