@@ -46,11 +46,12 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
+                android:orientation="vertical"
                 android:layout_height="match_parent">
 
                 <com.gc.materialdesign.views.ButtonFlat
                     android:id="@+id/uploadbtn"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:background="@color/primary"
@@ -58,6 +59,15 @@
 
                 </com.gc.materialdesign.views.ButtonFlat>
 
+                <com.gc.materialdesign.views.ButtonFlat
+                    android:id="@+id/delateBtn"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@color/primary"
+                    android:text="上传">
+
+                </com.gc.materialdesign.views.ButtonFlat>
 
             </LinearLayout>
         </LinearLayout>

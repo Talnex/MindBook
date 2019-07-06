@@ -27,6 +27,9 @@ import java.nio.charset.StandardCharsets;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+/**
+ * 注册模块
+ */
 public class SignupActivity extends AppCompatActivity {
     private static final String TAG = "SignupActivity";
 
@@ -91,6 +94,7 @@ public class SignupActivity extends AppCompatActivity {
         final String password = _passwordText.getText().toString();
         String reEnterPassword = _reEnterPasswordText.getText().toString();
 
+        //转圈的dialog
         new android.os.Handler().postDelayed(
                 new Runnable() {
                     public void run() {
@@ -98,7 +102,8 @@ public class SignupActivity extends AppCompatActivity {
                     }
                 }, 3000);
 
-        new Thread(){
+        //服务器获取请求
+        new Thread() {
             @Override
             public void run() {
                 try {
@@ -127,15 +132,16 @@ public class SignupActivity extends AppCompatActivity {
                         //获取响应文本
                         String responseText = sb.toString();
                         is.close();
-                        switch (responseText){
+                        switch (responseText) {
                             case "success":
                                 res = responseText;
                                 onSignupSuccess(email);
                                 break;
-                            default: res = responseText;
+                            default:
+                                res = responseText;
                         }
                     } else {
-                        res = "error:"+code;
+                        res = "error:" + code;
                     }
 
                 } catch (Exception e) {
@@ -144,24 +150,40 @@ public class SignupActivity extends AppCompatActivity {
             }
         }.start();
 
-        while (res.equals(""));
-        Log.d("test",res);
+        //这样不是很好
+        while (res.equals("")) ;
+        Log.d("test", res);
         onSignupFailed(res);
     }
 
 
+    /**
+     * 服务器返回成功登录的消息后进入这个函数
+     *
+     * @param email 用户的邮箱
+     */
     public void onSignupSuccess(String email) {
-        Intent intent = new Intent(SignupActivity.this,MindTreeEngine.class);
+        Intent intent = new Intent(SignupActivity.this, MindTreeEngine.class);
         Userinfo.useremail = email;
         startActivity(intent);
         this.finish();
     }
 
+    /**
+     * 服务器返回错误后进入这个函数
+     *
+     * @param info 错误信息
+     */
     public void onSignupFailed(String info) {
-        Toast.makeText(this,res,Toast.LENGTH_LONG).show();
+        Toast.makeText(this, res, Toast.LENGTH_LONG).show();
         _signupButton.setEnabled(true);
     }
 
+    /**
+     * 合法性验证的函数
+     *
+     * @return 是否合法
+     */
     public boolean validate() {
         boolean valid = true;
 

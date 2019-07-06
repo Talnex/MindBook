@@ -19,6 +19,9 @@ import com.talnex.wrongsbook.Utils.TreeUtil;
 import com.talnex.wrongsbook.Utils.ViewIds;
 import com.talnex.wrongsbook.Utils.WigetController;
 
+/**
+ * 长按节点并点击编辑后出现的自定义Dialog
+ */
 public class EditNodeMyDialog extends Dialog {
     private EditText et_name;
     private EditText et_rank;
@@ -28,6 +31,12 @@ public class EditNodeMyDialog extends Dialog {
     private myTextView contentview;
     private MindFragment mindFragment;
 
+    /**
+     * 构造时把那个节点的相关数据传进来
+     * @param context 上下文
+     * @param contentview 那个node的myTextview
+     * @param mindFragment 需要用到reDraw方法
+     */
     public EditNodeMyDialog(Context context, View contentview, MindFragment mindFragment) {
         super(context);
         setContentView(R.layout.dialog_layout);
@@ -41,6 +50,9 @@ public class EditNodeMyDialog extends Dialog {
 
     }
 
+    /**
+     * 显示时把原本数据添加进去
+     */
     @Override
     public void show() {
         super.show();
@@ -66,12 +78,17 @@ public class EditNodeMyDialog extends Dialog {
 
     }
 
+    /**
+     * 当点击Dialog的空白处时获取输入的内容，重新根据输入的文字长度重绘节点和线条
+     */
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     @Override
     protected void onStop() {
         super.onStop();
         TreeUtil.map_IDtoClass.get(nodeid).info = et_name.getText().toString();
         TreeUtil.map_IDtoClass.get(nodeid).rank = Integer.parseInt(et_rank.getText().toString());
+
+        //如果有url则改变type
         if (TreeUtil.map_IDtoClass.get(nodeid).url.equals("")) {
             TreeUtil.map_IDtoClass.get(nodeid).type = 0;
         } else TreeUtil.map_IDtoClass.get(nodeid).type = 1;

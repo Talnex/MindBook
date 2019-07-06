@@ -6,6 +6,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+/**
+ * 思维导图节点类，里面存储各种信息，在绘图中最重要的是TreeParm类，里面有节点的各种view信息
+ *
+ */
 public class Node {
     public String id;
     public int type;
@@ -148,15 +152,16 @@ public class Node {
         this.parent = parent;
     }
 
-    public void deleteChild() {
-
-    }
 
     public boolean hasChildren() {
         if (children.size() == 0) return false;
         return true;
     }
 
+    /**
+     * fastJSON 序列化时不是按照类的成员变量，而是通过get方法，这样可以把嵌套的子节点类型换成String型的ID
+     * @return 孩子节点的ID
+     */
     public List<String> getChildrenID() {
         List<String> ids = new ArrayList<>();
         for (Node child :

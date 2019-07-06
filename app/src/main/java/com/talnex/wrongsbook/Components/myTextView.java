@@ -6,8 +6,6 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.util.AttributeSet;
-import android.widget.EditText;
-import android.widget.TextView;
 
 import com.talnex.wrongsbook.R;
 
@@ -57,7 +55,9 @@ public class myTextView extends android.support.v7.widget.AppCompatEditText {
 
     public void setBorderColor(int newColor) {
         borderCol = newColor;
+        //重绘颜色内容
         invalidate();
+        //请求父布局重新测量重绘
         requestLayout();
     }
 

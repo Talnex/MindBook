@@ -40,6 +40,7 @@ public class HVScrollView extends FrameLayout {
     private final Rect mTempRect = new Rect();
     private Scroller mScroller;
 
+    //为了调整缩放曲线而添加的偏移量
     public static float offset = 1;
 
     /**

@@ -128,10 +128,13 @@ public class MindFragment extends Fragment {
     }
 
 
+    /**
+     * 绘制一棵树的节点和之间的线条
+     * @param node 思维导图节点
+     */
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     void drawTree(Node node) {
         List<Integer> linesid = new ArrayList<>();
-
         for (Node child :
                 node.children) {
             //如果已经绘制了
@@ -143,7 +146,6 @@ public class MindFragment extends Fragment {
                 modifyXY(child);
 
             } else drawNode(child);
-
 
             if (node.treeParm.center_y < child.treeParm.center_y) {
                 //画线

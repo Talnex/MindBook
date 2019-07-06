@@ -62,7 +62,7 @@ public class ComunityFragment extends Fragment {
         super.onAttach(context);
     }
 
-    //创建DownloadListener (webkit包)
+    //创建DownloadListener (webkit包)，重定义下载功能
     class MyDownloadListenter implements DownloadListener{
 
         @Override

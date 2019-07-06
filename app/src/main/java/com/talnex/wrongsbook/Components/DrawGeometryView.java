@@ -13,6 +13,10 @@ import android.graphics.Path;
 import android.util.AttributeSet;
 import android.view.View;
 
+/**
+ * 一个自定义的用来画线的view,可以自定义线条（贝塞尔曲线或直线）
+ * 自定义粗细、边框等
+ */
 @SuppressLint("DrawAllocation")
 public class DrawGeometryView extends View {
     private int beginx = 0;
@@ -59,6 +63,7 @@ public class DrawGeometryView extends View {
         redPaint.setStyle(Style.STROKE);// 设置画笔的填充类型(完全填充)
         redPaint.setTextSize(50);//字体
 
+        //贝塞尔曲线有两个控制锚点
         Path mPath = new Path();
         mPath.reset();
         //起点

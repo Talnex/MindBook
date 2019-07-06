@@ -178,6 +178,10 @@ public class LoginActivity extends AppCompatActivity {
         _loginButton.setEnabled(true);
     }
 
+    /**
+     * 本地验证
+     * @return
+     */
     public boolean validate() {
         boolean valid = true;
 

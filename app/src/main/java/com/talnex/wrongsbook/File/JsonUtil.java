@@ -22,6 +22,7 @@ public class JsonUtil {
     //规定每段显示的长度
     private static int LOG_MAXLENGTH = 2000;
 
+    //自定义输出大段log的方法
     public static void e(String TAG, String msg) {
         int strLength = msg.length();
         int start = 0;
@@ -39,6 +40,12 @@ public class JsonUtil {
         }
     }
 
+    /**
+     * 将一个Node对象转成JSON数组
+     * 使用的是Node中的Get方法
+     * @param node 导图根节点
+     * @return
+     */
     public static String nodetoJson(Node node){
         Collection<Node> res = TreeUtil.map_IDtoClass.values();
         List<Node> list = new ArrayList<Node>(res);
@@ -46,6 +53,11 @@ public class JsonUtil {
         return ja.toJSONString();
     }
 
+    /**
+     * JSON反序列化为Node对象，根据ChildrenID构建Node对象后，使用Map添加到相应的父节点上
+     * @param json 从文件读取的JSON原始数据
+     * @return
+     */
     public static Node jsontoNode(String json){
 
         Map<String, JSONObject> stringJSONObjectHashMap = new HashMap<>();

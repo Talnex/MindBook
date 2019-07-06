@@ -1,7 +1,6 @@
 package com.talnex.wrongsbook.Utils;
 
 import android.content.Context;
-import android.widget.RelativeLayout;
 
 public class DisplayUtil {
 

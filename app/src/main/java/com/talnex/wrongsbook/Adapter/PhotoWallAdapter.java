@@ -21,6 +21,9 @@ import butterknife.OnClick;
 import butterknife.OnLongClick;
 
 
+/**
+ * 这是图片选择器recyclerview的adapter
+ */
 public class PhotoWallAdapter extends RecyclerView.Adapter<PhotoWallAdapter.MyViewHolder> {
 
     Context mContext;
@@ -45,14 +48,12 @@ public class PhotoWallAdapter extends RecyclerView.Adapter<PhotoWallAdapter.MyVi
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
-
         if (mDatas.size() < mMaxNum) {
             if (mDatas.size() == 0) {
                 holder.mIvAddPhoto.setVisibility(View.VISIBLE);
                 holder.mIvDelete.setVisibility(View.GONE);
                 holder.mIvDisPlayItemPhoto.setVisibility(View.GONE);
                 holder.mIvUploadingBg.setVisibility(View.GONE);
-
             } else {
                 //判断是不是最后一张，最后一第为添加的图片
                 if (position < mDatas.size()) {
@@ -81,14 +82,13 @@ public class PhotoWallAdapter extends RecyclerView.Adapter<PhotoWallAdapter.MyVi
                     holder.mIvUploadingBg.setVisibility(View.GONE);
 
                 }
-
             }
 
         } else {
             String filePath = (String) mDatas.get(position);
             holder.mIvDisPlayItemPhoto.setVisibility(View.VISIBLE);
             holder.mIvAddPhoto.setVisibility(View.GONE);
-
+            //利用Picasso加载图片
             Picasso.with(mContext).load(new File(filePath)).centerCrop().resize(DisplayUtil.dip2px(mContext, 120), DisplayUtil.dip2px(mContext, 120))
                     .error(R.mipmap.pictures_no).into(holder.mIvDisPlayItemPhoto);
             if (mIsDelete) {
@@ -98,7 +98,6 @@ public class PhotoWallAdapter extends RecyclerView.Adapter<PhotoWallAdapter.MyVi
                 holder.mIvDelete.setVisibility(View.GONE);
                 holder.mIvUploadingBg.setVisibility(View.GONE);
             }
-
         }
 
     }
@@ -149,11 +148,12 @@ public class PhotoWallAdapter extends RecyclerView.Adapter<PhotoWallAdapter.MyVi
             });
         }
 
-
+        //单击事件
         @OnClick({R.id.ivAddPhoto, R.id.ivDelete, R.id.ivDisPlayItemPhoto})
         public void onClick(View view) {
             switch (view.getId()) {
                 case R.id.ivAddPhoto:
+                    //单击添加图片
                     if (mOnItemClickListener != null) {
                         mOnItemClickListener.onItemClick(view, getAdapterPosition());
                     }
@@ -164,6 +164,7 @@ public class PhotoWallAdapter extends RecyclerView.Adapter<PhotoWallAdapter.MyVi
                     notifyDataSetChanged();
                     break;
                 case R.id.ivDisPlayItemPhoto:
+                    //单击图片
                     if (mOnItemClickListener != null) {
                         mOnItemClickListener.onItemClick(view, getAdapterPosition());
                     }
@@ -171,6 +172,12 @@ public class PhotoWallAdapter extends RecyclerView.Adapter<PhotoWallAdapter.MyVi
             }
         }
 
+
+        /**
+         * 长按事件
+         * @param v
+         * @return 必须为true 不然会导致事件没有被消费进而被单击事件捕捉导致两个事件同时发生
+         */
         @OnLongClick({R.id.ivDisPlayItemPhoto})
         public boolean onLongClick(View v) {
             if (v.getId() == R.id.ivDisPlayItemPhoto) {

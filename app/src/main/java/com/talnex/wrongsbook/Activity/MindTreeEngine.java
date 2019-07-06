@@ -28,7 +28,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-
+/**
+ * 启动coolmenu，启动四个fragment
+ */
 public class MindTreeEngine extends AppCompatActivity {
 
     private DrawGeometryView drawGeometryView;
@@ -51,8 +53,10 @@ public class MindTreeEngine extends AppCompatActivity {
         ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.INTERNET,Manifest.permission.WRITE_EXTERNAL_STORAGE,
         Manifest.permission.READ_EXTERNAL_STORAGE},0);
 
+        //全屏
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
+        //得到手机的屏幕宽高并换算
         DisplayMetrics dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dm);
         DisplayUtil.SCREEN_WIDTH = dm.widthPixels;
@@ -65,11 +69,13 @@ public class MindTreeEngine extends AppCompatActivity {
         coolMenuFrameLayout.setTitles(titleList);
         coolMenuFrameLayout.setScrollBarSize(20);
 
+        //添加fragments
         fragments.add(new UserFragment());
         fragments.add(new ComunityFragment());
         fragments.add(new Wrongbookfragment());
         fragments.add(new MindFragment());
 
+        //v4包里的 不是app下的 v13包可兼容app包下的fragment
         FragmentPagerAdapter adapter = new FragmentPagerAdapter(getSupportFragmentManager()) {
             @Override
             public Fragment getItem(int position) {

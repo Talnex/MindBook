@@ -14,18 +14,18 @@ import java.util.Stack;
 public class MbFile {
     public static String FILENAME = "hello";
     public static String Mbfile = "/sdcard/mindbook/";
-    static String filenameTemp = Mbfile +FILENAME  + ".mb";
+    static String filenameTemp = Mbfile + FILENAME + ".mb";
     public static int height = 1;
     public static String MdFile = "/sdcard/mindbook/1.md";
     public static String newMdFile = "/sdcard/mindbook/2.md";
     private static String mdfileString = "";
 
-    public static boolean hasfile(){
+    public static boolean hasfile() {
         File file = new File(Mbfile);
         return file.exists();
     }
 
-    public static void writeTreeFile(String text){
+    public static void writeTreeFile(String text) {
         File file = new File(Mbfile);
         if (!file.exists()) {
             try {
@@ -55,27 +55,26 @@ public class MbFile {
             bw.close();
             fw.close();
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
             try {
                 bw.close();
                 fw.close();
             } catch (IOException e1) {
-                // TODO Auto-generated catch block
+
             }
         }
 
 
-
     }
-    public static String readTreeFile(){
+
+    public static String readTreeFile() {
         try {
-            FileInputStream fis= new FileInputStream(filenameTemp);
-            byte[] buff=new byte[1024];
-            int hasRead=0;
-            StringBuffer sb=new StringBuffer();
-            while ((hasRead=fis.read(buff))>0){
-                sb.append(new String(buff,0,hasRead));
+            FileInputStream fis = new FileInputStream(filenameTemp);
+            byte[] buff = new byte[1024];
+            int hasRead = 0;
+            StringBuffer sb = new StringBuffer();
+            while ((hasRead = fis.read(buff)) > 0) {
+                sb.append(new String(buff, 0, hasRead));
             }
             fis.close();
             return sb.toString();
@@ -85,6 +84,12 @@ public class MbFile {
         return null;
     }
 
+    /**
+     * 读取Md文件并转化成Node类型，采用递归的方法
+     * @param path 文件路径
+     * @return
+     * @throws IOException
+     */
     public static Node readMdFile(String path) throws IOException {
         File file = new File(path);
         Node root = new Node(null);
@@ -145,6 +150,11 @@ public class MbFile {
         return root;
     }
 
+    /**
+     * 获取一行Md文本的含义及内容
+     * @param line 一行文本数据
+     * @return 层级+内容
+     */
     public static String getMean(String line) {
         if (line.charAt(0) == '#') {
             int i;
@@ -159,6 +169,10 @@ public class MbFile {
     }
 
 
+    /**
+     * 将导图节点导出成Md文件所需要的String并存在mdfileString里
+     * @param node
+     */
     public static void exportMdFile(Node node) {
         for (int i = 1; i <= height; i++) {
             mdfileString = mdfileString + '#';
@@ -176,6 +190,11 @@ public class MbFile {
         }
     }
 
+    /**
+     * 将mdfileString写入到文件里
+     * @param path
+     * @throws IOException
+     */
     public static void writeMdFile(String path) throws IOException {
         FileWriter writer = new FileWriter(path);
         writer.write(mdfileString);
@@ -183,13 +202,11 @@ public class MbFile {
     }
 
 
-
-
-    public static void ziptoMbFile(){
+    public static void ziptoMbFile() {
 
     }
 
-    public static void unzipMbFile(){
+    public static void unzipMbFile() {
 
     }
 }

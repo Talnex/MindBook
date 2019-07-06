@@ -15,6 +15,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * 文件管理listview的自定义adapter
+ * 里面有个checkbox 一个imgeview 还有个textview显示文件大小
  * Created by talnex on 2018/3/1.
  */
 
@@ -65,6 +67,7 @@ public class FileAdapter extends BaseAdapter {
             }else{
                 viewHolder.checkBox.setVisibility(View.GONE);
             }
+            //根据文件类型装填图片 计算文件大小
             if (file.getName().endsWith("jpg")||file.getName().endsWith("png")){
                 viewHolder.img.setImageResource(R.drawable.photo);
             }else viewHolder.img.setImageResource(R.drawable.unknown);

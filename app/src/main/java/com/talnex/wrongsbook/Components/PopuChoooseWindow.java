@@ -73,7 +73,6 @@ public class PopuChoooseWindow extends PopupWindow implements View.OnClickListen
     }
 
     private void initView(View contentView) {
-
         mTvCamera = (TextView) contentView.findViewById(R.id.tvCamera);
         mTvAlbum = (TextView) contentView.findViewById(R.id.tvAlbum);
         mTvCancel = (TextView) contentView.findViewById(R.id.tvCancel);
@@ -83,7 +82,6 @@ public class PopuChoooseWindow extends PopupWindow implements View.OnClickListen
         mTvCamera.setOnClickListener(this);
         mTvAlbum.setOnClickListener(this);
         mTvCancel.setOnClickListener(this);
-
     }
 
 

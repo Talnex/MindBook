@@ -1,5 +1,9 @@
 package com.talnex.wrongsbook.Beans;
 
+/**
+ * 节点view属性类，包含矩形左边中点、中心、右边中点的xy坐标和长宽，以及最重要的上下偏移量
+ * offset_up和offset_down 节点就是根据这个来计算自己的位置的
+ */
 public class TreeParm {
     public int offset_up;
     public int offset_down;

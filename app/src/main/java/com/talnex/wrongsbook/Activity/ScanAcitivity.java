@@ -21,7 +21,9 @@ import com.talnex.wrongsbook.R;
 
 import java.io.IOException;
 
-
+/**
+ * 吊起相机 处理图片
+ */
 public class ScanAcitivity extends AppCompatActivity {
 
     private static final int REQUEST_CODE = 99;

@@ -37,7 +37,7 @@ public class TreeUtil {
                 Node child = children.get(i);
                 if (!child.url.equals("")) child.type = 1;
                 child.no = i;
-            //    child.rank = i;
+                //child.rank = i;
                 loadAllNode(child);
             }
         }
